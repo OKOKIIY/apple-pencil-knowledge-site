@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fff9f7" />
+    <title>Apple Pencil 讲人话｜兼容查询与二手避坑</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <div class="site-shell">
+      <header class="topbar" aria-label="账号信息">
+        <div class="profile-lockup">
+          <div class="avatar" id="profile-avatar" aria-hidden="true">白</div>
+          <div>
+            <p class="eyebrow" id="profile-shop-name">白术小铺｜专研 Apple Pencil</p>
+            <p class="profile-name" id="profile-name">小红书关注我</p>
+            <p class="profile-proof" id="profile-proof" hidden></p>
+          </div>
+        </div>
+        <a class="profile-link" id="profile-link" target="_blank" rel="noreferrer" hidden>
+          <span>去小红书</span>
+          <span data-icon="arrow-up-right"></span>
+        </a>
+      </header>
+
+      <main id="main-content">
+        <section class="page page-active" data-page="match" aria-labelledby="match-title">
+          <div class="intro-band">
+            <div class="intro-copy">
+              <h1 id="match-title"><span>先查 iPad，</span><span class="compact-title-tail">再买笔</span></h1>
+              <p>选好型号，我把兼容关系讲成一句能直接做决定的话。</p>
+            </div>
+            <div class="device-art" aria-label="iPad 与 Apple Pencil 示意图" role="img">
+              <div class="device-tablet"><span class="device-screen"></span></div>
+              <div class="device-pencil"></div>
+            </div>
+          </div>
+
+          <section class="query-panel" aria-labelledby="query-title">
+            <div class="query-overview">
+              <span class="step-count" id="flow-step-count">第 1 步 / 共 4 步</span>
+              <div class="progress-meter" aria-hidden="true">
+                <span class="progress-dot is-current" data-flow-dot="year"></span>
+                <span class="progress-dot" data-flow-dot="series"></span>
+                <span class="progress-dot" data-flow-dot="variant"></span>
+                <span class="progress-dot" data-flow-dot="purpose"></span>
+              </div>
+            </div>
+
+            <div class="query-prompt">
+              <h2 id="query-title">先把 iPad 选准确</h2>
+              <p id="query-description">先选机型，再告诉我用途。我会把结论紧接着放在下面。</p>
+            </div>
+
+            <div class="query-form-body" id="query-form-body">
+              <div class="query-form-inner">
+                <p class="query-status" id="query-status" role="status" aria-live="polite">先从发布年份开始，后面的选项会依次解锁。</p>
+
+                <div class="query-steps" aria-label="iPad 选择步骤">
+              <div class="flow-panel is-current" data-step-panel="year">
+                <div class="flow-panel-heading"><span class="flow-step-number">1</span><span>发布年份</span><small data-step-state>待选择</small></div>
+                <label class="field">
+                  <span>你的 iPad 是哪一年发布的？</span>
+                  <select id="year-select" name="release-year" aria-label="选择 iPad 年份"></select>
+                </label>
+              </div>
+
+              <div class="flow-panel" data-step-panel="series">
+                <div class="flow-panel-heading"><span class="flow-step-number">2</span><span>iPad 类型</span><small data-step-state>先选年份</small></div>
+                <label class="field">
+                  <span>属于数字版、Air、Pro 还是 mini？</span>
+                  <select id="series-select" name="ipad-series" aria-label="选择 iPad 系列" disabled></select>
+                </label>
+              </div>
+
+              <div class="flow-panel" data-step-panel="variant">
+                <div class="flow-panel-heading"><span class="flow-step-number">3</span><span>具体版本</span><small data-step-state>先选类型</small></div>
+                <label class="field">
+                  <span>再确认尺寸、芯片或代数</span>
+                  <select id="variant-select" name="ipad-variant" aria-label="选择 iPad 具体版本" disabled></select>
+                </label>
+              </div>
+
+              <div class="flow-panel purpose-panel" data-step-panel="purpose">
+                <div class="flow-panel-heading"><span class="flow-step-number">4</span><span>主要用途</span><small data-step-state>先选版本</small></div>
+                <div class="purpose-heading">
+                  <span>你主要拿它做什么？</span>
+                  <small>只改变推荐顺序，不改变兼容结论</small>
+                </div>
+                <div class="segmented" role="group" aria-label="选择使用目的">
+                  <button class="segment" type="button" data-purpose="notes" aria-pressed="false" disabled><span data-icon="note"></span>记笔记</button>
+                  <button class="segment" type="button" data-purpose="draw" aria-pressed="false" disabled><span data-icon="pen"></span>画画</button>
+                  <button class="segment" type="button" data-purpose="carefree" aria-pressed="false" disabled><span data-icon="heart"></span>想省心</button>
+                  <button class="segment" type="button" data-purpose="budget" aria-pressed="false" disabled><span data-icon="wallet"></span>预算优先</button>
+                </div>
+              </div>
+                </div>
+
+                <div class="flow-empty" data-step-panel="empty" hidden>
+                  <span data-icon="info"></span>
+                  <p>这一年没有新款 iPad 发布。换一个年份，或者先看为什么不能只按购买年份判断。</p>
+                </div>
+
+                <button class="primary-button" id="query-button" type="button" disabled>
+                  <span data-icon="search"></span>
+                  <span id="query-button-label">查看适配结论</span>
+                </button>
+                <p class="helper-copy" id="query-hint">还差 4 项。选好后点击这里，结果会显示在本页下方。</p>
+              </div>
+            </div>
+            <div class="result-bridge" id="result-bridge" hidden>
+              <span class="result-bridge-icon"><span data-icon="check"></span></span>
+              <span class="result-bridge-copy" role="status" aria-live="polite"><strong id="result-bridge-title">结论已生成</strong><small id="result-bridge-detail">就在下面，继续往下看。</small></span>
+              <button class="result-edit-button" id="edit-query-button" type="button"><span data-icon="pen"></span>修改</button>
+            </div>
+          </section>
+
+          <section class="result-section" id="result-section" aria-live="polite" aria-labelledby="result-title" hidden>
+            <div class="result-heading">
+              <div>
+                <span class="section-label result-kicker">查询结果</span>
+                <h2 id="result-title" tabindex="-1">你的适配结论</h2>
+              </div>
+              <span class="result-count" id="result-count">待查询</span>
+            </div>
+            <p class="result-summary" id="result-summary">选好年份、系列和具体版本，再点上面的按钮，我会把结论放在这里。</p>
+
+            <div class="empty-result empty-result-neutral" id="empty-result">
+              <span class="empty-result-icon"><span data-icon="info"></span></span>
+              <div>
+                <strong id="empty-result-title">先把 iPad 选准确</strong>
+                <p id="empty-result-copy">我会先判断能不能用，再告诉你首选、备选和需要的配件。</p>
+              </div>
+            </div>
+
+            <article class="recommendation-card" id="primary-card">
+              <div class="card-topline">
+                <span class="status-chip status-good"><span data-icon="check"></span>首选</span>
+                <span class="card-note" id="primary-note">适合记笔记 / 批注</span>
+              </div>
+              <div class="product-row">
+                <div class="product-thumb product-thumb-usbc" aria-hidden="true"><span></span></div>
+                <div class="product-copy">
+                  <h3 id="primary-name">USB-C 第三代笔</h3>
+                  <p id="primary-official">官方名称：Apple Pencil（USB-C）</p>
+                </div>
+              </div>
+              <div class="fact-grid" id="primary-facts"></div>
+              <div class="reason-block">
+                <span class="reason-label"><span data-icon="sparkles"></span>为什么推荐</span>
+                <p class="plain-explain" id="primary-explain">它能直接用 USB-C 配对和充电，支持倾斜，但没有真实压感。日常写字、批注和备课够用。</p>
+              </div>
+              <div class="price-row">
+                <div><span>官方价</span><strong id="primary-retail">展示位</strong></div>
+                <div><span id="primary-used-label">二手参考</span><strong id="primary-used">展示位</strong></div>
+                <button class="text-button" id="primary-shop-button" type="button" data-action="shop">查看在售 <span data-icon="arrow-up-right"></span></button>
+              </div>
+            </article>
+
+            <article class="alternative-card" id="secondary-card">
+              <div class="card-topline">
+                <span class="status-chip status-neutral">备选</span>
+                <span class="card-note" id="secondary-note">想画画再考虑</span>
+              </div>
+              <div class="product-row">
+                <div class="product-thumb product-thumb-gen1" aria-hidden="true"><span></span></div>
+                <div class="product-copy">
+                  <h3 id="secondary-name">Apple Pencil 一代</h3>
+                  <p id="secondary-official">有压感，但需要转接器</p>
+                </div>
+              </div>
+              <div class="fact-grid" id="secondary-facts"></div>
+              <div class="reason-block">
+                <span class="reason-label"><span data-icon="info"></span>另一种取舍</span>
+                <p class="plain-explain" id="secondary-explain">如果你画画更在意力度变化，它反而更合适；但这套连接方式多一步，转接器和笔帽也要收好。</p>
+              </div>
+              <div class="price-row secondary-price-row">
+                <div><span>官方价</span><strong id="secondary-retail">展示位</strong></div>
+                <div><span id="secondary-used-label">二手参考</span><strong id="secondary-used">展示位</strong></div>
+                <button class="text-button" id="secondary-shop-button" type="button" data-action="shop" hidden>去看在售 <span data-icon="arrow-up-right"></span></button>
+              </div>
+              <button class="outline-button" type="button" data-action="adapter-faq"><span data-icon="help"></span>先看转接器限制</button>
+            </article>
+
+            <div class="trust-strip"><span data-icon="info"></span><span>这里先给你能执行的结论；价格、成色、库存和购买链接以实际页面为准。</span></div>
+          </section>
+        </section>
+
+        <section class="page" data-page="avoid" aria-labelledby="avoid-title" hidden>
+          <div class="page-header compact-header">
+            <h1 id="avoid-title">二手笔便宜，<br />风险不只在真假。</h1>
+            <p>连接不了、压感不对、电池老化、拆修过，很多问题看起来都像“买到假货”。</p>
+          </div>
+          <section class="risk-banner">
+            <div class="risk-icon"><span data-icon="shield-alert"></span></div>
+            <div>
+              <strong>先记住一件事</strong>
+              <p>塑封、盒子和序列号，都不能单独替你验货。</p>
+            </div>
+          </section>
+          <div class="section-heading stacked-heading">
+            <div>
+              <span class="section-label">最容易踩的坑</span>
+              <h2>先把这 3 个误区避开</h2>
+            </div>
+          </div>
+          <div class="pitfall-list">
+            <article class="pitfall-item"><span class="item-number">01</span><div><h3>有序列号，不等于这支笔是真的</h3><p>序列号能被盗用。还要看插口、字体、压感、来源和实际体验。</p></div></article>
+            <article class="pitfall-item"><span class="item-number">02</span><div><h3>“全新未拆”也可能只是放太久</h3><p>电池会老化，保修也会从购买日开始走。低价不能自动等于捡漏。</p></div></article>
+            <article class="pitfall-item"><span class="item-number">03</span><div><h3>转接器报错，不一定是转接器坏</h3><p>先确认 iPad 型号。USB-C 接口不代表所有 iPad 都能接一代笔。</p></div></article>
+          </div>
+          <section class="receipt-checklist" id="receipt-checklist" aria-labelledby="checklist-title">
+            <div class="section-heading stacked-heading"><div><span class="section-label">到手先做什么</span><h2 id="checklist-title">先测功能，再看外观</h2></div></div>
+            <details class="checklist-details" id="receipt-checklist-details">
+              <summary><span>打开收货后测试顺序</span><span data-icon="chevron-down"></span></summary>
+              <ol class="checklist-steps">
+                <li><strong>确认型号能用</strong><p>先对照你的 iPad 完整机型和这支笔的兼容关系。不能配对时，先别急着判笔坏。</p></li>
+                <li><strong>配对并看电量</strong><p>在兼容 iPad 上完成配对，确认电量能正常显示；需要转接器的机型，再检查转接器和线材。</p></li>
+                <li><strong>在备忘录正常书写</strong><p>轻写、连写和断笔都试一次。支持压力感应的型号，再逐渐加力看变化是否连续。</p></li>
+                <li><strong>完成一次充电</strong><p>确认它能持续充电，不只看能不能短暂连上；不同型号的充电方式不一样。</p></li>
+                <li><strong>最后看来源和拆修线索</strong><p>检查笔尖、接口、笔帽和笔身成色是否一致，再核对卖家说明、凭证和售后边界。</p></li>
+              </ol>
+              <div class="checklist-outcome"><strong>怎么判断</strong><p>功能、来源和外观证据互相吻合，风险才较低；任何一项异常，都先要求补测试或暂停确认，不要只凭序列号下结论。</p></div>
+            </details>
+          </section>
+          <section class="case-section">
+            <div class="section-heading"><div><span class="section-label">已沉淀案例</span><h2>用户以为是 A，后来发现是 B</h2></div><span class="status-chip status-neutral">5 个案例</span></div>
+            <div class="case-list">
+              <details class="case-item"><summary><span class="case-dot amber"></span><span>转接器报错，实际更可能是不适配</span><span data-icon="chevron-down"></span></summary><div class="case-copy"><p><strong>用户误会：</strong>连不上就是转接器坏了。</p><p><strong>先做：</strong>查完整 iPad 型号，再排除线材、转接器和笔本体。</p></div></details>
+              <details class="case-item"><summary><span class="case-dot mint"></span><span>备忘录能写，Procreate 没有压力变化</span><span data-icon="chevron-down"></span></summary><div class="case-copy"><p><strong>用户误会：</strong>一个软件异常就是假笔。</p><p><strong>先做：</strong>重启、重连，再检查压力曲线和笔刷设置。</p></div></details>
+              <details class="case-item"><summary><span class="case-dot rose"></span><span>有序列号，也能连接，为什么还不能放心</span><span data-icon="chevron-down"></span></summary><div class="case-copy"><p><strong>用户误会：</strong>查到编号就等于整支笔原装未维修。</p><p><strong>先做：</strong>把功能实测、来源和外观线索一起看。</p></div></details>
+              <details class="case-item"><summary><span class="case-dot amber"></span><span>低价“全新未拆”，不一定是安全优惠</span><span data-icon="chevron-down"></span></summary><div class="case-copy"><p><strong>用户误会：</strong>塑封没拆就等于电池、保修和来源都没问题。</p><p><strong>先做：</strong>核对购买时间、保修、功能测试和卖家售后。</p></div></details>
+              <details class="case-item"><summary><span class="case-dot rose"></span><span>用了几个月出问题，不等于一定是翻新笔</span><span data-icon="chevron-down"></span></summary><div class="case-copy"><p><strong>用户误会：</strong>故障、拆修、翻新和仿品是一回事。</p><p><strong>先做：</strong>按连接、软件、兼容性、硬件和来源逐步排查。</p></div></details>
+            </div>
+          </section>
+          <button class="primary-button" type="button" data-action="show-checklist"><span data-icon="list-checks"></span>查看收货后测试顺序</button>
+        </section>
+
+        <section class="page" data-page="faq" aria-labelledby="faq-title" hidden>
+          <div class="page-header compact-header">
+            <h1 id="faq-title">把常见问题，<br />说得简单一点。</h1>
+            <p>先按顺序排查：重启、重连、设置、兼容性，最后才判断硬件。</p>
+          </div>
+          <label class="search-field"><span data-icon="search"></span><input id="faq-search" name="faq-query" type="search" autocomplete="off" placeholder="搜：压感、转接器、连接…" aria-label="搜索常见问题" /></label>
+          <div class="faq-list" id="faq-list">
+            <details open><summary>USB-C 第三代笔为什么没有压感？<span data-icon="chevron-down"></span></summary><p>因为它的产品设计就没有压力感应。写字和批注够用，但画画需要线条随力度变化时，要看支持压感的型号。</p></details>
+            <details><summary>有压感，但是 Procreate 没有压力变化？<span data-icon="chevron-down"></span></summary><p>先重启 iPad，再取消蓝牙配对并重新连接；然后检查 Procreate 的压力曲线和笔刷设置。不要第一步就判定是假货。</p></details>
+            <details><summary>转接器提示“不受支持”，怎么办？<span data-icon="chevron-down"></span></summary><p>先确认 iPad 的完整机型。转接器只能解决接口路径，不能绕过 iPad 本身的兼容限制。</p></details>
+            <details><summary>磁吸收纳是不是等于磁吸充电？<span data-icon="chevron-down"></span></summary><p>不是。USB-C 版可以吸在部分 iPad 侧边收纳，但不等于能磁吸配对或无线充电。</p></details>
+            <details><summary>二手 Apple Pencil 到手，最先测什么？<span data-icon="chevron-down"></span></summary><p>顺序是：确认兼容、配对和电量、书写、压力变化、充电，再看外观和来源。先测功能，比先盯着包装更有效。</p></details>
+            <details><summary>有序列号，是不是就可以放心买？<span data-icon="chevron-down"></span></summary><p>不能只靠这一项。序列号只能提供身份线索，还要和实测、来源、购买凭证和外观状态一起判断。</p></details>
+            <details><summary>笔连不上，是不是一定坏了？<span data-icon="chevron-down"></span></summary><p>先看型号是否兼容，再检查电量、蓝牙、线材或转接器；在确认兼容且重新连接后仍异常，才把笔本体列为重点排查对象。</p></details>
+            <details><summary>用几个月出问题，就是翻新笔吗？<span data-icon="chevron-down"></span></summary><p>不是。故障可能来自连接、软件、笔尖、屏幕、系统或硬件；翻新、拆修和仿品需要来源、功能和外观证据一起支持。</p></details>
+          </div>
+        </section>
+
+        <section class="page" data-page="shop" aria-labelledby="shop-title" hidden>
+          <div class="page-header compact-header">
+            <h1 id="shop-title">我的在售，<br />只放我能说明白的。</h1>
+            <p>这里是我的个人在售链接。价格、库存和成色会变化，购买前请先完成上面的兼容查询。</p>
+          </div>
+          <div class="notice-box" id="shop-notice"><span data-icon="info"></span><span>只展示已经核对过来源、成色、价格和购买链接的商品；信息会随当天在售状态更新。</span></div>
+          <div class="shop-list" id="shop-list"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="主导航">
+        <a class="nav-item is-active" href="#match" data-nav="match" aria-current="page"><span data-icon="compass"></span><span>兼容查询</span></a>
+        <a class="nav-item" href="#avoid" data-nav="avoid"><span data-icon="shield"></span><span>二手避坑</span></a>
+        <a class="nav-item" href="#faq" data-nav="faq"><span data-icon="help-circle"></span><span>常见问题</span></a>
+        <a class="nav-item" href="#shop" data-nav="shop"><span data-icon="shopping-bag"></span><span>我的在售</span></a>
+      </nav>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="site-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
