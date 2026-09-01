@@ -74,7 +74,8 @@ async function assertQueryStateRestores(page) {
   assert(await page.locator('[data-purpose="notes"]').getAttribute('aria-pressed') === 'true', 'purpose did not restore from query URL');
   assert(await page.locator('#result-section').isVisible(), 'queried result did not restore from query URL');
   assert(await page.locator('#result-bridge').isVisible(), 'queried state should preserve its compact selection summary');
-  assert(await page.locator('#query-form-body').evaluate((node) => node.inert), 'queried state should collapse the completed form');
+  assert(await page.locator('#query-form-body').evaluate((node) => !node.inert && node.getBoundingClientRect().height > 200), 'queried state should keep the completed form visible');
+  assert(await page.locator('#year-select').isVisible() && await page.locator('#variant-select').isVisible(), 'queried state should keep selected controls visible');
 }
 
 async function assertCompactTitleWrap(page, width) {
@@ -260,6 +261,9 @@ async function main() {
       await assertKeyboardEntryPoint(page);
       assert(await page.locator('#profile-link').isVisible(), 'profile link should render when the supplied Xiaohongshu URL is available');
       assert((await page.locator('#profile-link').getAttribute('href')).includes('xhslink.cn/m/5wHE9dbgPI5'), 'profile link should retain the supplied Xiaohongshu URL');
+      await assertText(page, '#profile-name', '2373051060');
+      assert(await page.locator('#copy-xhs-id').isVisible(), 'copy button should render for the supplied Xiaohongshu ID');
+      assert(await page.locator('#profile-avatar img').isVisible(), 'supplied profile avatar should render');
       await assertText(page, '#profile-proof', '7850');
       await assertSemanticTextContrast(page);
       await assertYearCoverage(page);
@@ -303,15 +307,16 @@ async function main() {
       const form = document.querySelector('#query-form-body');
       const bridge = document.querySelector('#result-bridge');
       const result = document.querySelector('#result-section').getBoundingClientRect();
-      return { formHeight: form.getBoundingClientRect().height, formInert: form.inert, bridgeVisible: !bridge.hidden, resultTop: result.top, viewportHeight: innerHeight };
+      const formRect = form.getBoundingClientRect();
+      return { formHeight: formRect.height, formBottom: formRect.bottom, formInert: form.inert, bridgeVisible: !bridge.hidden, resultTop: result.top };
     });
-    assert(submittedLayout.formInert && submittedLayout.formHeight <= 1, `submitted form should collapse into a compact selection summary: ${JSON.stringify(submittedLayout)}`);
-    assert(submittedLayout.bridgeVisible, `compact selection summary should be visible after submit: ${JSON.stringify(submittedLayout)}`);
-    assert(submittedLayout.resultTop < submittedLayout.viewportHeight - 100, `result should stay in the same viewport after submit: ${JSON.stringify(submittedLayout)}`);
+    assert(!submittedLayout.formInert && submittedLayout.formHeight > 200, `submitted form should stay open so selected choices remain visible: ${JSON.stringify(submittedLayout)}`);
+    assert(submittedLayout.bridgeVisible, `selection status bridge should be visible after submit: ${JSON.stringify(submittedLayout)}`);
+    assert(submittedLayout.resultTop >= submittedLayout.formBottom - 2, `result should follow the open query form: ${JSON.stringify(submittedLayout)}`);
     await flowPage.screenshot({ path: path.join(screenshots, 'query-flow-result-390.png'), fullPage: false });
     await flowPage.locator('#edit-query-button').click();
     await flowPage.waitForTimeout(420);
-    assert(await flowPage.locator('#query-form-body').evaluate((node) => !node.inert && node.getBoundingClientRect().height > 200), 'modify action should restore the query form');
+    assert(await flowPage.locator('#query-form-body').evaluate((node) => !node.inert && node.getBoundingClientRect().height > 200), 'modify action should keep the query form available');
     await flowPage.close();
 
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
@@ -339,7 +344,9 @@ async function main() {
     await assertText(page, '#primary-facts', '需要转接器（iPad 10/11）');
     await assertText(page, '#primary-retail', '¥799');
     await assertText(page, '#primary-used', '¥348');
-    await assertText(page, '#primary-used-label', '在售价');
+    await assertText(page, '#primary-used-label', '在售价（二手99新）');
+    assert(await page.locator('#primary-facts .fact-tile').count() >= 5, 'facts should render as scannable feature tiles');
+    assert(await page.locator('#primary-card .feature-guide').isVisible(), 'primary result should include a static feature guide');
     assert(await page.locator('#primary-shop-button').isVisible(), 'the listed first-generation Pencil should expose its shop action');
 
     await query(page, '2024', 'air', 'air_m2_11', 'draw');
@@ -387,6 +394,8 @@ async function main() {
     assert(await page.locator('#shop-list .shop-item').count() === 1, 'shop page should render the supplied listing');
     await assertText(page, '#shop-list .shop-item', '¥348');
     await assertText(page, '#shop-list .shop-item', 'iPad 11（A16）');
+    await assertText(page, '#shop-list .shop-item', '全套带盒');
+    await assertText(page, '#shop-list .shop-item', '支持验货');
     await page.screenshot({ path: path.join(screenshots, 'shop-live-390.png'), fullPage: true });
     await assertBottomContentAboveNav(page, '#shop-list .shop-item');
     await assertNoHorizontalOverflow(page);
@@ -400,6 +409,7 @@ async function main() {
     await configuredPage.goto('http://127.0.0.1:3012/', { waitUntil: 'networkidle' });
     await assertText(configuredPage, '#profile-shop-name', '白术小铺｜测试资料');
     await assertText(configuredPage, '#profile-name', '小红书：baizhu-pencil');
+    assert(await configuredPage.locator('#copy-xhs-id').isVisible(), 'copy button should render when a Xiaohongshu ID is supplied');
     assert(await configuredPage.locator('#profile-link').isVisible(), 'profile link should render when a verified Xiaohongshu URL is supplied');
     assert((await configuredPage.locator('#profile-link').getAttribute('href')).includes('example.com/xiaohongshu'), 'profile link should retain the verified Xiaohongshu URL');
     await query(configuredPage, '2025', 'digital', 'ipad_a16', 'draw');
@@ -413,7 +423,7 @@ async function main() {
     await browser.close();
   }
   assert(failures.length === 0, failures.join('\n'));
-  console.log('UI verification passed: responsive layouts, compact in-context query transition, gradient token, 36 official-compatibility paths, query states, avoidance checklist, navigation, FAQ search, and live listing state');
+  console.log('UI verification passed: responsive layouts, open query form with visible selections, feature tiles and static guide, gradient token, 36 official-compatibility paths, query states, avoidance checklist, navigation, FAQ search, and live listing state');
 }
 
 main().catch((error) => {

@@ -7,6 +7,7 @@ const iconPaths = {
   wallet: '<path d="M4 6h14a2 2 0 0 1 2 2v10H6a2 2 0 0 1-2-2V6Z"/><path d="M4 6V5a2 2 0 0 1 2-2h10"/><path d="M16 13h4"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/>',
   share: '<circle cx="18" cy="5" r="2.2"/><circle cx="6" cy="12" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="m8 11 7.8-4.5M8 13l7.8 4.5"/>',
+  copy: '<rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   'arrow-up-right': '<path d="M7 17 17 7M8 7h9v9"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.5 2.5 0 0 1 4.7 1.2c0 1.8-2.4 2.1-2.4 3.8M12 17h.01"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>',
@@ -60,6 +61,7 @@ function renderProfile() {
   const avatar = document.querySelector('#profile-avatar');
   const profileLink = document.querySelector('#profile-link');
   const profileProof = document.querySelector('#profile-proof');
+  const copyButton = document.querySelector('#copy-xhs-id');
   const name = String(profileData.shopName || '').trim();
   const accountId = String(profileData.xiaohongshuId || '').trim();
   const socialProof = String(profileData.socialProof || '').trim();
@@ -68,6 +70,11 @@ function renderProfile() {
 
   if (name) shopName.textContent = name;
   if (accountId) profileName.textContent = `小红书：${accountId}`;
+  if (copyButton) {
+    copyButton.hidden = !accountId;
+    copyButton.dataset.copyValue = accountId;
+    copyButton.setAttribute('aria-label', accountId ? `复制小红书号 ${accountId}` : '复制小红书号');
+  }
   if (profileProof) {
     profileProof.hidden = !socialProof;
     if (socialProof) profileProof.textContent = socialProof;
@@ -108,12 +115,16 @@ function renderShop() {
     const condition = escapeHtml(listing.condition || '成色以详情为准');
     const note = escapeHtml(listing.note || '购买前先确认兼容型号。');
     const price = escapeHtml(listing.price || '请看购买页');
+    const priceLabel = escapeHtml(listing.priceLabel || '当前在售价');
+    const sold = escapeHtml(listing.sold || '');
+    const service = escapeHtml(listing.service || '');
     const url = safeUrl(listing.url);
     const actionLabel = escapeHtml(listing.actionLabel || '前往购买链接');
     const action = url
       ? `<a class="outline-button" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${actionLabel}</a>`
       : '<span class="listing-link-pending">购买链接核验中</span>';
-    return `<article class="shop-item"><div class="shop-thumb ${thumb}" aria-hidden="true"><span></span></div><div class="shop-copy"><div class="shop-meta"><span class="status-chip status-good">${badge}</span><span>${condition}</span></div><h2>${name}</h2><p>${note}</p><div class="shop-price"><span>当前在售价</span><strong>${price}</strong></div>${action}</div></article>`;
+    const supporting = [sold, service].filter(Boolean).map((item) => `<span>${item}</span>`).join('');
+    return `<article class="shop-item"><div class="shop-thumb ${thumb}" aria-hidden="true"><span></span></div><div class="shop-copy"><div class="shop-meta"><span class="status-chip status-good">${badge}</span><span>${condition}</span></div><h2>${name}</h2><p>${note}</p>${supporting ? `<div class="shop-supporting">${supporting}</div>` : ''}<div class="shop-price"><span>${priceLabel}</span><strong>${price}</strong></div>${action}</div></article>`;
   }).join('');
 }
 
@@ -499,7 +510,7 @@ function renderQueryFlow() {
     series: ['继续选 iPad 类型', `${yearSelect.value} 年的机型已经准备好。`, '年份已选，继续选数字版、Air、Pro 或 mini。'],
     variant: ['再确认具体版本', '尺寸、芯片或代数会决定兼容关系。', '类型已选，再确认具体尺寸、芯片或代数。'],
     purpose: ['最后选一下用途', '用途只改变推荐顺序，不改变兼容结论。', '还差最后一项；选好后，下面就会给出结论。'],
-    complete: ['已选好 iPad', '结果会按你的选择生成；想改条件，点右侧“修改”。', '4 项都选好了，点击下方按钮查看适配结论。'],
+    complete: ['已选好 iPad', '结果会按你的选择生成；上面的条件会一直保留，想改直接改。', state.hasQueried ? '结论已生成；你可以直接调整上面的选项再查一次。' : '4 项都选好了，点击下方按钮查看适配结论。'],
     empty: [`${yearSelect.value} 年没有新款 iPad`, '这个年份没有新款 iPad 发布，不需要继续往下选。', '请换一个有 iPad 发布的年份，再继续查询。']
   };
   const [title, description, hint] = copy[activeStep];
@@ -508,10 +519,9 @@ function renderQueryFlow() {
   document.querySelector('#query-description').textContent = description;
   document.querySelector('#query-hint').textContent = hint;
   if (queryStatus) queryStatus.textContent = hint;
-  queryPanel?.classList.toggle('is-submitted', state.hasQueried);
   if (queryFormBody) {
-    queryFormBody.inert = state.hasQueried;
-    queryFormBody.setAttribute('aria-hidden', String(state.hasQueried));
+    queryFormBody.inert = false;
+    queryFormBody.removeAttribute('aria-hidden');
   }
 
   const complete = {
@@ -554,7 +564,7 @@ function renderQueryFlow() {
   queryButtonLabel.textContent = activeStep === 'empty'
     ? '查看年份说明'
     : activeStep === 'complete'
-      ? '看我能用哪支笔'
+      ? state.hasQueried ? '更新适配结论' : '看我能用哪支笔'
       : '还差几步，先继续选择';
   queryButton.dataset.flowReady = String(canSubmit);
 }
@@ -591,7 +601,10 @@ function renderFacts(pencil) {
     ...(pencil.system ? [['系统要求', pencil.system]] : [])
   ];
   return facts
-    .map(([label, value]) => `<div class="fact-row"><span>${label}</span><strong class="fact-value ${chipClass(value)}">${value}</strong></div>`)
+    .map(([label, value]) => {
+      const tone = chipClass(value);
+      return `<div class="fact-tile ${tone}"><span class="fact-label">${escapeHtml(label)}</span><strong class="fact-value">${escapeHtml(value)}</strong></div>`;
+    })
     .join('');
 }
 
@@ -610,7 +623,7 @@ function hasListingFor(key) {
 function renderUsedPrice(key, pencil, valueSelector, labelSelector) {
   const listing = getListingFor(key);
   const label = document.querySelector(labelSelector);
-  if (label) label.textContent = listing ? '在售价' : '二手参考';
+  if (label) label.textContent = listing ? (listing.priceLabel || '在售价') : '二手参考';
   renderPrice(valueSelector, listing?.price || pencil.used, listing ? '以在售页为准' : '暂未提供参考');
 }
 
@@ -648,7 +661,7 @@ function renderResult() {
   resultSection.hidden = false;
   if (resultBridge) resultBridge.hidden = false;
   if (resultBridgeTitle) resultBridgeTitle.textContent = '结论已生成';
-  if (resultBridgeDetail) resultBridgeDetail.textContent = `已选：${selectedContext()}`;
+  if (resultBridgeDetail) resultBridgeDetail.textContent = `已选：${selectedContext()} · 上方条件仍保留，可直接修改。`;
 
   if (!device || !device.compatible.length) {
     document.querySelector('#result-title').textContent = device?.label || `${year} 年没有新款 iPad`;
@@ -799,6 +812,29 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
 }
 
+async function copyText(value) {
+  const text = String(value || '').trim();
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.setAttribute('readonly', '');
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.append(input);
+    input.select();
+    const copied = document.execCommand('copy');
+    input.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function pulseStep(step) {
   const panel = document.querySelector(`[data-step-panel="${step}"]`);
   if (!panel) return;
@@ -907,7 +943,7 @@ window.addEventListener('popstate', restoreRoute);
 window.addEventListener('hashchange', restoreRoute);
 
 document.querySelectorAll('[data-action]').forEach((button) => {
-  button.addEventListener('click', () => {
+  button.addEventListener('click', async () => {
     const action = button.dataset.action;
     if (action === 'scroll-top') window.scrollTo({ top: 0, behavior: 'smooth' });
     if (action === 'share') {
@@ -918,6 +954,10 @@ document.querySelectorAll('[data-action]').forEach((button) => {
       }
     }
     if (action === 'shop') goTo('shop');
+    if (action === 'copy-xhs-id') {
+      const copied = await copyText(button.dataset.copyValue || '');
+      showToast(copied ? '小红书号已复制' : '复制失败，请长按账号号复制');
+    }
     if (action === 'adapter-faq') {
       goTo('faq');
       const detail = [...document.querySelectorAll('#faq-list details')].find((node) => node.textContent.includes('转接器'));

@@ -15,7 +15,12 @@
           <div class="avatar" id="profile-avatar" aria-hidden="true">白</div>
           <div>
             <p class="eyebrow" id="profile-shop-name">白术小铺｜专研 Apple Pencil</p>
-            <p class="profile-name" id="profile-name">小红书关注我</p>
+            <div class="profile-meta-row">
+              <p class="profile-name" id="profile-name">小红书号待补充</p>
+              <button class="profile-copy-button" id="copy-xhs-id" type="button" data-action="copy-xhs-id" hidden aria-label="复制小红书号">
+                <span data-icon="copy"></span><span>复制</span>
+              </button>
+            </div>
             <p class="profile-proof" id="profile-proof" hidden></p>
           </div>
         </div>
@@ -110,14 +115,14 @@
                 <p class="helper-copy" id="query-hint">还差 4 项。选好后点击这里，结果会显示在本页下方。</p>
               </div>
             </div>
+          </section>
+
+          <section class="result-section" id="result-section" aria-live="polite" aria-labelledby="result-title" hidden>
             <div class="result-bridge" id="result-bridge" hidden>
               <span class="result-bridge-icon"><span data-icon="check"></span></span>
               <span class="result-bridge-copy" role="status" aria-live="polite"><strong id="result-bridge-title">结论已生成</strong><small id="result-bridge-detail">就在下面，继续往下看。</small></span>
               <button class="result-edit-button" id="edit-query-button" type="button"><span data-icon="pen"></span>修改</button>
             </div>
-          </section>
-
-          <section class="result-section" id="result-section" aria-live="polite" aria-labelledby="result-title" hidden>
             <div class="result-heading">
               <div>
                 <span class="section-label result-kicker">查询结果</span>
@@ -148,6 +153,13 @@
                 </div>
               </div>
               <div class="fact-grid" id="primary-facts"></div>
+              <div class="feature-guide">
+                <img src="assets/pencil-feature-guide.svg" alt="" width="720" height="220" loading="lazy" />
+                <div class="feature-guide-copy">
+                  <strong>看图记住这几件事</strong>
+                  <p>压感主要影响画画线条；磁吸收纳、磁吸配对和磁吸充电不是一回事。</p>
+                </div>
+              </div>
               <div class="reason-block">
                 <span class="reason-label"><span data-icon="sparkles"></span>为什么推荐</span>
                 <p class="plain-explain" id="primary-explain">它能直接用 USB-C 配对和充电，支持倾斜，但没有真实压感。日常写字、批注和备课够用。</p>
