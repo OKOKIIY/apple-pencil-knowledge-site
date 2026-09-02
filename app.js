@@ -601,7 +601,7 @@ function getPencil(key, device) {
   return pencil;
 }
 
-function renderFacts(pencil) {
+function renderFacts(pencil, { compact = false } = {}) {
   const facts = [
     ['真实压感', pencil.pressure],
     ['磁吸收纳', pencil.storage],
@@ -610,12 +610,28 @@ function renderFacts(pencil) {
     ['转接器', pencil.adapter],
     ...(pencil.system ? [['系统要求', pencil.system]] : [])
   ];
-  return facts
-    .map(([label, value]) => {
-      const tone = chipClass(value);
-      return `<div class="fact-tile ${tone}"><span class="fact-label">${escapeHtml(label)}</span><strong class="fact-value">${escapeHtml(value)}</strong></div>`;
-    })
-    .join('');
+  const coreLabels = new Set(['真实压感', '磁吸收纳', '转接器']);
+  const renderTile = ([label, value], core = false) => {
+    const tone = chipClass(value);
+    return `<div class="fact-tile ${tone} ${core ? 'fact-tile-core' : 'fact-tile-detail'}"><span class="fact-label">${escapeHtml(label)}</span><strong class="fact-value">${escapeHtml(value)}</strong></div>`;
+  };
+  const allCoreFacts = facts.filter(([label]) => coreLabels.has(label));
+  const coreFacts = compact
+    ? [
+        allCoreFacts.find(([label]) => label === '真实压感'),
+        allCoreFacts.find(([label, value]) => label === '转接器' && !String(value).includes('无需转接器'))
+          || allCoreFacts.find(([label]) => label === '磁吸收纳')
+      ].filter(Boolean)
+    : allCoreFacts;
+  const visibleCoreLabels = new Set(coreFacts.map(([label]) => label));
+  const detailFacts = facts.filter(([label]) => !visibleCoreLabels.has(label));
+  const detailSummary = detailFacts.map(([label]) => label).join('、');
+
+  return `<div class="fact-grid fact-grid-core${compact ? ' fact-grid-compact' : ''}" aria-label="核心功能">${coreFacts.map((fact) => renderTile(fact, true)).join('')}</div>
+    <details class="fact-more">
+      <summary><span>更多功能</span><span class="fact-more-summary">${escapeHtml(detailSummary)}</span><span class="fact-more-chevron" aria-hidden="true"></span></summary>
+      <div class="fact-grid fact-grid-more" aria-label="更多功能">${detailFacts.map((fact) => renderTile(fact)).join('')}</div>
+    </details>`;
 }
 
 function renderPrice(selector, value, fallback) {
@@ -721,8 +737,10 @@ function renderResult() {
     document.querySelector('#secondary-note').textContent = secondaryKey === 'gen1' ? '有压感，但多一步' : '另一种取舍';
     document.querySelector('#secondary-name').textContent = secondary.name;
     document.querySelector('#secondary-official').textContent = secondary.official;
-    document.querySelector('#secondary-facts').innerHTML = renderFacts(secondary);
-    document.querySelector('#secondary-explain').textContent = explanation(secondaryKey, state.purpose, device);
+    document.querySelector('#secondary-facts').innerHTML = renderFacts(secondary, { compact: true });
+    document.querySelector('#secondary-explain').textContent = secondaryKey === 'gen1'
+      ? '想画画时，它的压感更有优势；代价是接口和转接步骤更麻烦。'
+      : '它是另一种取舍：重点看你更在意价格、压感还是连接省心。';
     renderPrice('#secondary-retail', secondary.retail, '以 Apple 当前页面为准');
     renderUsedPrice(secondaryKey, secondary, '#secondary-used', '#secondary-used-label');
     setThumbClass(document.querySelector('#secondary-card .product-thumb'), secondary);

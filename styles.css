@@ -1747,6 +1747,270 @@ main,
   }
 }
 
+/* V2 information hierarchy: lead with the decision, then reveal supporting facts. */
+.result-facts {
+  margin-top: 14px;
+}
+
+.fact-grid-core {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.fact-grid-more {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.fact-tile-core {
+  min-height: 82px;
+}
+
+.fact-tile-detail {
+  min-height: 62px;
+}
+
+.fact-more {
+  margin-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.fact-more summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 14px;
+  gap: 8px;
+  align-items: center;
+  min-height: 40px;
+  color: var(--rose-deep);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.fact-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.fact-more-summary {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fact-more-chevron,
+.gate-chevron {
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 160ms ease;
+}
+
+.fact-more[open] .fact-more-chevron,
+.avoid-gate[open] .gate-chevron {
+  transform: rotate(225deg) translate(-1px, -1px);
+}
+
+.fact-more[open] .fact-grid-more,
+.avoid-gate[open] .gate-detail {
+  animation: disclosure-arrive 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes disclosure-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-guide {
+  grid-template-columns: minmax(0, 1.1fr) minmax(120px, 0.9fr);
+}
+
+.feature-guide-copy p {
+  max-width: 22ch;
+}
+
+.avoid-gates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.avoid-gate {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.avoid-gate[open] {
+  box-shadow: var(--shadow-soft);
+}
+
+.avoid-gate summary {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 12px;
+  gap: 9px;
+  align-items: center;
+  min-height: 92px;
+  padding: 13px 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.avoid-gate summary::-webkit-details-marker {
+  display: none;
+}
+
+.gate-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.gate-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.gate-copy strong {
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.gate-copy small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.gate-chevron {
+  color: var(--muted);
+}
+
+.gate-detail {
+  padding: 0 12px 13px 55px;
+  border-top: 1px solid var(--line);
+}
+
+.gate-detail p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.avoid-gate-source {
+  border-color: #e8cbd2;
+  background: #fffafa;
+}
+
+.avoid-gate-source .gate-icon {
+  color: var(--rose-deep);
+  background: var(--rose-soft);
+}
+
+.avoid-gate-test {
+  border-color: #cbe3da;
+  background: #fbfffd;
+}
+
+.avoid-gate-test .gate-icon {
+  color: var(--mint-ink);
+  background: var(--mint-soft);
+}
+
+.avoid-gate-fix {
+  border-color: #efd7b3;
+  background: #fffdfa;
+}
+
+.avoid-gate-fix .gate-icon {
+  color: var(--amber-ink);
+  background: var(--amber-soft);
+}
+
+@media (max-width: 699px) {
+  .fact-grid-core,
+  .fact-grid-more {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fact-tile-core:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .feature-guide {
+    grid-template-columns: minmax(0, 1fr) 0.85fr;
+  }
+
+  .avoid-gates {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .avoid-gate summary {
+    min-height: 70px;
+  }
+
+  .avoid-gate[open] summary {
+    min-height: 66px;
+  }
+}
+
+@media (max-width: 359px) {
+  .fact-grid-core,
+  .fact-grid-more {
+    grid-template-columns: 1fr;
+  }
+
+  .fact-tile-core:first-child {
+    grid-column: auto;
+  }
+
+  .feature-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-guide-copy p {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fact-more-chevron,
+  .gate-chevron,
+  .avoid-gate,
+  .fact-more,
+  .fact-more[open] .fact-grid-more,
+  .avoid-gate[open] .gate-detail {
+    transition: none;
+    animation: none;
+  }
+}
+
 html {
   scroll-padding-bottom: calc(88px + var(--safe-bottom));
 }
@@ -3164,5 +3428,75 @@ summary {
 
   .feature-guide img {
     max-height: 84px;
+  }
+}
+
+/* Final V2 cascade: these selectors intentionally sit after the legacy rules above. */
+.query-panel .helper-copy {
+  display: none;
+}
+
+.feature-guide {
+  display: block;
+  padding: 8px;
+}
+
+.feature-guide img {
+  max-height: 108px;
+}
+
+.result-facts .fact-grid-core {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.result-facts .fact-grid-more {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.result-facts .fact-tile-core {
+  min-height: 82px;
+}
+
+.result-facts .fact-tile-detail {
+  min-height: 62px;
+}
+
+.result-facts .feature-guide {
+  grid-template-columns: minmax(0, 1.1fr) minmax(120px, 0.9fr);
+}
+
+@media (max-width: 699px) {
+  .result-facts .fact-grid-core,
+  .result-facts .fact-grid-more {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .result-facts .fact-tile-core:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .feature-guide img {
+    max-height: 100px;
+  }
+}
+
+@media (max-width: 359px) {
+  .result-facts .fact-grid-core,
+  .result-facts .fact-grid-more {
+    grid-template-columns: 1fr;
+  }
+
+  .result-facts .fact-tile-core:first-child {
+    grid-column: auto;
+  }
+
+  .feature-guide img {
+    max-height: 92px;
   }
 }

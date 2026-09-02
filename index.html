@@ -152,8 +152,8 @@
                   <p id="primary-official">官方名称：Apple Pencil（USB-C）</p>
                 </div>
               </div>
-              <div class="fact-grid" id="primary-facts"></div>
-              <div class="feature-guide">
+              <div id="primary-facts" class="result-facts"></div>
+              <div class="feature-guide" aria-label="功能示意">
                 <img src="assets/pencil-feature-guide.svg" alt="功能示意：压感、磁吸收纳和转接器分别说明不同限制" width="720" height="220" loading="lazy" />
               </div>
               <div class="reason-block">
@@ -179,7 +179,7 @@
                   <p id="secondary-official">有压感，但需要转接器</p>
                 </div>
               </div>
-              <div class="fact-grid" id="secondary-facts"></div>
+              <div id="secondary-facts" class="result-facts"></div>
               <div class="reason-block">
                 <span class="reason-label"><span data-icon="info"></span>另一种取舍</span>
                 <p class="plain-explain" id="secondary-explain">如果你画画更在意力度变化，它反而更合适；但这套连接方式多一步，转接器和笔帽也要收好。</p>
@@ -210,14 +210,23 @@
           </section>
           <div class="section-heading stacked-heading">
             <div>
-              <span class="section-label">最容易踩的坑</span>
-              <h2>先把这 3 个误区避开</h2>
+              <span class="section-label">二手笔先过三关</span>
+              <h2>先看你现在该做哪一步</h2>
             </div>
           </div>
-          <div class="pitfall-list">
-            <article class="pitfall-item"><span class="item-number">01</span><div><h3>有序列号，不等于这支笔是真的</h3><p>序列号能被盗用。还要看插口、字体、压感、来源和实际体验。</p></div></article>
-            <article class="pitfall-item"><span class="item-number">02</span><div><h3>“全新未拆”也可能只是放太久</h3><p>电池会老化，保修也会从购买日开始走。低价不能自动等于捡漏。</p></div></article>
-            <article class="pitfall-item"><span class="item-number">03</span><div><h3>转接器报错，不一定是转接器坏</h3><p>先确认 iPad 型号。USB-C 接口不代表所有 iPad 都能接一代笔。</p></div></article>
+          <div class="avoid-gates" aria-label="二手购买三关">
+            <details class="avoid-gate avoid-gate-source">
+              <summary><span class="gate-icon"><span data-icon="search"></span></span><span class="gate-copy"><strong>买前看来源</strong><small>塑封和序列号不能单独证明正品</small></span><span class="gate-chevron" aria-hidden="true"></span></summary>
+              <div class="gate-detail"><p>先问购买时间、来源和售后，再把序列号、插口字体与卖家描述对上。</p></div>
+            </details>
+            <details class="avoid-gate avoid-gate-test">
+              <summary><span class="gate-icon"><span data-icon="check"></span></span><span class="gate-copy"><strong>到手测功能</strong><small>先测连接、书写、压感和充电</small></span><span class="gate-chevron" aria-hidden="true"></span></summary>
+              <div class="gate-detail"><p>在兼容的 iPad 上完成配对，轻写、重写和充电都试一次；别先被盒子带跑。</p></div>
+            </details>
+            <details class="avoid-gate avoid-gate-fix">
+              <summary><span class="gate-icon"><span data-icon="help"></span></span><span class="gate-copy"><strong>遇到问题先排查</strong><small>连不上不一定是笔坏</small></span><span class="gate-chevron" aria-hidden="true"></span></summary>
+              <div class="gate-detail"><p>按重启、重连、设置、兼容性、硬件的顺序排查，转接器报错先查 iPad 型号。</p></div>
+            </details>
           </div>
           <section class="receipt-checklist" id="receipt-checklist" aria-labelledby="checklist-title">
             <div class="section-heading stacked-heading"><div><span class="section-label">到手先做什么</span><h2 id="checklist-title">先测功能，再看外观</h2></div></div>

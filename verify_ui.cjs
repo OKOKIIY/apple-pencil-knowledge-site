@@ -18,6 +18,19 @@ async function assertTextAbsent(page, selector, unexpected) {
   assert(!value.includes(unexpected), `${unexpected} should not appear in ${selector}: ${value}`);
 }
 
+async function assertFactText(page, cardSelector, expected) {
+  const value = await page.locator(`${cardSelector} .result-facts`).textContent();
+  assert(String(value || '').includes(expected), `${expected} not found in ${cardSelector} supporting facts: ${value}`);
+}
+
+async function openSupportingFacts(page, cardSelector) {
+  const details = page.locator(`${cardSelector} .fact-more`);
+  assert(await details.count() === 1, `${cardSelector} should expose one supporting-facts disclosure`);
+  assert(!(await details.evaluate((node) => node.open)), `${cardSelector} supporting facts should start collapsed`);
+  await details.locator('summary').click();
+  assert(await details.evaluate((node) => node.open), `${cardSelector} supporting facts should open from its summary`);
+}
+
 async function assertNoHorizontalOverflow(page) {
   const size = await page.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
   assert(size.content <= size.viewport, `horizontal overflow: ${JSON.stringify(size)}`);
@@ -331,10 +344,13 @@ async function main() {
     await query(page, '2025', 'digital', 'ipad_a16', 'notes');
     await assertText(page, '#primary-name', 'USB-C 第三代笔');
     await assertText(page, '#primary-facts', '无需转接器');
-    await assertText(page, '#primary-facts', 'iPadOS 17.1.1 或更高版本');
+    await assertFactText(page, '#primary-card', 'iPadOS 17.1.1 或更高版本');
+    assert(await page.locator('#primary-card .fact-grid-core .fact-tile').count() === 3, 'primary result should lead with three core facts');
+    await openSupportingFacts(page, '#primary-card');
     await assertText(page, '#primary-used', '暂未提供参考');
     assert(await page.locator('#primary-shop-button').isHidden(), 'query results should not expose a shop action without a verified listing');
     assert(await page.locator('#secondary-shop-button').isVisible(), 'a verified alternative listing should expose its shop action');
+    assert(await page.locator('#secondary-card .fact-grid-core .fact-tile').count() <= 2, 'alternative result should stay compact and avoid repeating every feature');
     await assertQueryStateRestores(page);
     assert(await page.locator('.bottom-nav').isVisible(), 'bottom nav should remain visible as a standard mobile tab bar');
     await assertBottomContentAboveNav(page);
@@ -355,11 +371,12 @@ async function main() {
 
     await query(page, '2024', 'air', 'air_m2_11', 'draw');
     await assertText(page, '#primary-name', 'Apple Pencil Pro');
-    await assertText(page, '#primary-facts', 'iPadOS 17.5 或更高版本');
+    await assertFactText(page, '#primary-card', 'iPadOS 17.5 或更高版本');
 
     await query(page, '2020', 'air', 'air4', 'draw');
     await assertText(page, '#primary-name', 'Apple Pencil 二代');
-    await assertTextAbsent(page, '#primary-facts', 'iPadOS');
+    await assertFactText(page, '#primary-card', '配对方式');
+    await assertTextAbsent(page, '#primary-facts .fact-grid-core', 'iPadOS');
 
     await query(page, '2015', 'pro', 'pro129_1', 'notes');
     await assertText(page, '#primary-name', 'Apple Pencil 一代');
@@ -381,6 +398,10 @@ async function main() {
     assert(await page.locator('[data-page="avoid"]').isVisible(), 'avoid page is not visible');
     assert(new URL(page.url()).hash === '#avoid', `avoid route was not written to the URL: ${page.url()}`);
     assert(await page.locator('[data-page="avoid"] .case-item').count() === 5, 'avoid page should expose all five settled cases');
+    assert(await page.locator('[data-page="avoid"] .avoid-gate').count() === 3, 'avoid page should expose three risk gates');
+    assert(await page.locator('[data-page="avoid"] .avoid-gate[open]').count() === 0, 'risk gates should start collapsed so the first screen stays scannable');
+    await page.locator('[data-page="avoid"] .avoid-gate-test summary').click();
+    assert(await page.locator('[data-page="avoid"] .avoid-gate-test').evaluate((node) => node.open), 'risk gate should reveal its detail in place');
     await page.locator('[data-action="show-checklist"]').click();
     assert(await page.locator('#receipt-checklist-details').evaluate((node) => node.open), 'receipt checklist should open from its call to action');
     assert(await page.locator('#receipt-checklist-details .checklist-steps li').count() === 5, 'receipt checklist should include five functional checks');
