@@ -409,9 +409,10 @@ const queryStatus = document.querySelector('#query-status');
 const resultTitle = document.querySelector('#result-title');
 const queryPanel = document.querySelector('.query-panel');
 const queryFormBody = document.querySelector('#query-form-body');
+const queryDescription = document.querySelector('#query-description');
+const queryHint = document.querySelector('#query-hint');
 const resultBridge = document.querySelector('#result-bridge');
 const resultBridgeTitle = document.querySelector('#result-bridge-title');
-const resultBridgeDetail = document.querySelector('#result-bridge-detail');
 
 function isEmptyYear() {
   return Boolean(yearSelect.value) && Object.keys(catalog[yearSelect.value] || {}).length === 0;
@@ -510,15 +511,24 @@ function renderQueryFlow() {
     series: ['继续选 iPad 类型', `${yearSelect.value} 年的机型已经准备好。`, '年份已选，继续选数字版、Air、Pro 或 mini。'],
     variant: ['再确认具体版本', '尺寸、芯片或代数会决定兼容关系。', '类型已选，再确认具体尺寸、芯片或代数。'],
     purpose: ['最后选一下用途', '用途只改变推荐顺序，不改变兼容结论。', '还差最后一项；选好后，下面就会给出结论。'],
-    complete: ['已选好 iPad', '结果会按你的选择生成；上面的条件会一直保留，想改直接改。', state.hasQueried ? '结论已生成；你可以直接调整上面的选项再查一次。' : '4 项都选好了，点击下方按钮查看适配结论。'],
+    complete: ['已选好 iPad', state.hasQueried ? '' : '选好后点击按钮查看结论。', '4 项都选好了，点击下方按钮查看适配结论。'],
     empty: [`${yearSelect.value} 年没有新款 iPad`, '这个年份没有新款 iPad 发布，不需要继续往下选。', '请换一个有 iPad 发布的年份，再继续查询。']
   };
   const [title, description, hint] = copy[activeStep];
 
   document.querySelector('#query-title').textContent = title;
-  document.querySelector('#query-description').textContent = description;
-  document.querySelector('#query-hint').textContent = hint;
-  if (queryStatus) queryStatus.textContent = hint;
+  if (queryDescription) {
+    queryDescription.hidden = state.hasQueried;
+    queryDescription.textContent = description;
+  }
+  if (queryHint) {
+    queryHint.hidden = state.hasQueried;
+    queryHint.textContent = hint;
+  }
+  if (queryStatus) {
+    queryStatus.hidden = state.hasQueried;
+    queryStatus.textContent = hint;
+  }
   if (queryFormBody) {
     queryFormBody.inert = false;
     queryFormBody.removeAttribute('aria-hidden');
@@ -661,7 +671,6 @@ function renderResult() {
   resultSection.hidden = false;
   if (resultBridge) resultBridge.hidden = false;
   if (resultBridgeTitle) resultBridgeTitle.textContent = '结论已生成';
-  if (resultBridgeDetail) resultBridgeDetail.textContent = `已选：${selectedContext()} · 上方条件仍保留，可直接修改。`;
 
   if (!device || !device.compatible.length) {
     document.querySelector('#result-title').textContent = device?.label || `${year} 年没有新款 iPad`;

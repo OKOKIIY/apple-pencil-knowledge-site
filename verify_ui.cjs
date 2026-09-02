@@ -312,6 +312,10 @@ async function main() {
     });
     assert(!submittedLayout.formInert && submittedLayout.formHeight > 200, `submitted form should stay open so selected choices remain visible: ${JSON.stringify(submittedLayout)}`);
     assert(submittedLayout.bridgeVisible, `selection status bridge should be visible after submit: ${JSON.stringify(submittedLayout)}`);
+    await assertText(flowPage, '#result-bridge', '结论已生成');
+    assert(!(await flowPage.locator('#result-bridge').innerText()).includes('上方条件仍保留'), 'result bridge should not repeat helper copy');
+    assert(await flowPage.locator('#query-description').isHidden(), 'completed query should hide the redundant description');
+    assert(await flowPage.locator('#query-hint').isHidden(), 'completed query should hide the redundant helper copy');
     assert(submittedLayout.resultTop >= submittedLayout.formBottom - 2, `result should follow the open query form: ${JSON.stringify(submittedLayout)}`);
     await flowPage.screenshot({ path: path.join(screenshots, 'query-flow-result-390.png'), fullPage: false });
     await flowPage.locator('#edit-query-button').click();
