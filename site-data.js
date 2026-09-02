@@ -8,7 +8,7 @@ window.APPLE_PENCIL_SITE_DATA = {
   },
   pencilPrices: {
     gen1: {
-      used: '¥348'
+      used: '¥388'
     }
   },
   listings: [
@@ -19,7 +19,7 @@ window.APPLE_PENCIL_SITE_DATA = {
       badge: '99 新',
       condition: '全套带盒 · 含 C 转',
       note: '主推 iPad 11（A16）；iPad 6—11 代数字版按具体型号确认。链接在就是还在，支持验货，商品资料标注无拆修。',
-      price: '¥348',
+      price: '¥388',
       priceLabel: '在售价（二手99新）',
       sold: '已售 62',
       service: '有问题联系，按商品页约定全款退包运费',
