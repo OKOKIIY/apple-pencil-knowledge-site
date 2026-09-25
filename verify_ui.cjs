@@ -444,11 +444,64 @@ async function main() {
     assert((await configuredPage.locator('#shop-list .outline-button').getAttribute('href')).includes('example.com/apple-pencil'), 'configured shop should retain a verified purchase URL');
     await assertNoHorizontalOverflow(configuredPage);
     await configuredPage.close();
+
+    const budgetPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    await budgetPage.route('**/site-data.js', (route) => route.fulfill({
+      contentType: 'application/javascript',
+      body: 'window.APPLE_PENCIL_SITE_DATA = { pencilPrices: { gen1: { used: "¥999" }, "usb-c": { used: "¥100" } }, listings: [] };'
+    }));
+    await budgetPage.goto('http://127.0.0.1:3012/?year=2022&series=digital&variant=ipad10&purpose=budget&result=1#match', { waitUntil: 'networkidle' });
+    await assertText(budgetPage, '#primary-name', 'USB-C 第三代笔');
+    await assertText(budgetPage, '#secondary-name', 'Apple Pencil 一代');
+    await budgetPage.close();
+
+    const malformedConfigPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const malformedErrors = [];
+    malformedConfigPage.on('pageerror', (error) => malformedErrors.push(error.message));
+    await malformedConfigPage.route('**/site-data.js', (route) => route.fulfill({
+      contentType: 'application/javascript',
+      body: 'window.APPLE_PENCIL_SITE_DATA = { listings: [null, { pencil: "gen1", status: "inactive", url: "https://example.com" }] };'
+    }));
+    await malformedConfigPage.goto('http://127.0.0.1:3012/', { waitUntil: 'networkidle' });
+    assert(malformedErrors.length === 0, `malformed listing data should not break app startup: ${malformedErrors.join('; ')}`);
+    assert(await malformedConfigPage.locator('#series-select option').count() === 1, 'query flow should initialize with malformed listing data');
+    assert(await malformedConfigPage.locator('#shop-list .shop-item').count() === 0, 'inactive listing should stay hidden');
+    await malformedConfigPage.close();
+
+    const emptyYearPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    await emptyYearPage.goto('http://127.0.0.1:3012/?year=2023&result=1#match', { waitUntil: 'networkidle' });
+    await assertText(emptyYearPage, '#result-count', '无新款');
+    await assertText(emptyYearPage, '#empty-result-title', '没有新款 iPad');
+    assert(!(await emptyYearPage.locator('#result-summary').innerText()).includes('这台 iPad 不支持'), 'empty year should not be described as an unsupported device');
+    await emptyYearPage.close();
+
+    const faqJumpPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    await faqJumpPage.goto('http://127.0.0.1:3012/', { waitUntil: 'networkidle' });
+    await faqJumpPage.locator('#year-select').selectOption('2022');
+    await faqJumpPage.locator('#series-select').selectOption('digital');
+    await faqJumpPage.locator('#variant-select').selectOption('ipad10');
+    await faqJumpPage.locator('[data-purpose="notes"]').click();
+    await faqJumpPage.locator('#query-button').click();
+    await faqJumpPage.waitForTimeout(350);
+    await faqJumpPage.locator('[data-nav="faq"]').click();
+    await faqJumpPage.locator('#faq-search').fill('完全找不到');
+    assert(await faqJumpPage.locator('#faq-empty').isVisible(), 'FAQ should expose a no-results state');
+    await faqJumpPage.locator('[data-nav="match"]').click();
+    await faqJumpPage.locator('[data-action="adapter-faq"]').click();
+    assert(await faqJumpPage.locator('#faq-search').inputValue() === '', 'targeted FAQ navigation should clear the previous filter');
+    assert(await faqJumpPage.locator('#faq-list details:not([hidden])').count() === 8, 'targeted FAQ navigation should restore all questions');
+    assert(await faqJumpPage.locator('#faq-list details[open]').count() >= 1, 'targeted FAQ navigation should open the relevant answer');
+    await faqJumpPage.close();
+
+    const invalidRoutePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    await invalidRoutePage.goto('http://127.0.0.1:3012/?year=2023&result=1#invalid', { waitUntil: 'networkidle' });
+    assert(new URL(invalidRoutePage.url()).hash === '#match', 'invalid hash should be canonicalized to #match');
+    await invalidRoutePage.close();
   } finally {
     await browser.close();
   }
   assert(failures.length === 0, failures.join('\n'));
-  console.log('UI verification passed: responsive layouts, open query form with visible selections, feature tiles and static guide, gradient token, 36 official-compatibility paths, query states, avoidance checklist, navigation, FAQ search, and live listing state');
+  console.log('UI verification passed: responsive layouts, 36 official-compatibility paths, query restoration, empty-year and malformed-config states, budget ordering, avoidance checklist, FAQ search and targeted navigation, live listing state, and safe route handling');
 }
 
 main().catch((error) => {

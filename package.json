@@ -1,0 +1,13 @@
+{
+  "name": "apple-pencil-knowledge-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static Apple Pencil compatibility and resale guidance site",
+  "scripts": {
+    "start": "python -m http.server 3012",
+    "verify": "node verify_ui.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.60.0"
+  }
+}

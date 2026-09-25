@@ -1002,6 +1002,17 @@ main,
   font-size: 13px;
 }
 
+.faq-empty {
+  margin: 14px 0 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--surface);
+  font-size: 14px;
+  text-align: center;
+}
+
 .shop-list {
   display: grid;
   gap: 10px;
@@ -3498,5 +3509,575 @@ summary {
 
   .feature-guide img {
     max-height: 92px;
+  }
+}
+
+/* Decision-first result hierarchy. Keep the evidence, but give the buying answer one clear visual entry point. */
+.result-heading {
+  align-items: flex-start;
+}
+
+.result-heading > div {
+  min-width: 0;
+}
+
+.result-heading h2 {
+  margin-top: 1px;
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1.22;
+}
+
+.result-context {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.result-summary {
+  margin: 13px 0 15px;
+  padding: 11px 13px;
+  border-left: 3px solid var(--rose);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--ink);
+  background: #fffdfd;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.recommendation-card {
+  border: 1.5px solid #c5ded5;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(62, 92, 79, 0.08);
+}
+
+.recommendation-card .status-chip {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.recommendation-card .product-copy h3 {
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.recommendation-card .product-copy p {
+  margin-top: 5px;
+}
+
+.reason-block-primary {
+  margin-top: 15px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--rose);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: #fff7f7;
+}
+
+.reason-block-primary .plain-explain {
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 1.58;
+}
+
+.result-facts .fact-grid-core {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.result-facts .fact-tile-core {
+  min-height: 68px;
+  padding: 9px 10px;
+  border-color: var(--line);
+  border-radius: 6px;
+  background: #fffdfd;
+}
+
+.result-facts .fact-tile-core .fact-label {
+  font-size: 10px;
+}
+
+.result-facts .fact-tile-core .fact-value {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.result-facts .fact-more {
+  margin-top: 8px;
+}
+
+.feature-guide {
+  margin-top: 14px;
+  padding: 6px;
+  border-color: #e7dedf;
+  background: #fbfaf9;
+}
+
+.feature-guide img {
+  width: 100%;
+  height: auto;
+  max-height: none;
+}
+
+.alternative-card {
+  margin-top: 14px;
+  border-color: #e6dde0;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(104, 68, 81, 0.04);
+}
+
+.alternative-card .status-chip {
+  max-width: 62%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alternative-card .product-row {
+  grid-template-columns: 58px minmax(0, 1fr);
+  margin-top: 12px;
+}
+
+.alternative-card .product-thumb {
+  width: 58px;
+  height: 58px;
+}
+
+.alternative-card .product-copy h3 {
+  font-size: 18px;
+}
+
+.alternative-card .reason-block {
+  margin-top: 12px;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.alternative-card .plain-explain {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.alternative-card .result-facts .fact-grid-core {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A slim cylinder, a separate conical nib, and a flat magnetic end read more like the product than a tilted rectangle. */
+.device-pencil {
+  width: 15px;
+  height: 138px;
+  border: 1px solid #d8d1d0;
+  border-radius: 9px;
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 66%, #e8e3e2 100%);
+  box-shadow: 3px 5px 0 rgba(104, 68, 81, 0.12);
+}
+
+.device-pencil::before {
+  position: absolute;
+  top: -5px;
+  left: -1px;
+  width: 15px;
+  height: 9px;
+  border: 1px solid #d3c7c7;
+  border-radius: 8px;
+  background: #f0eceb;
+  content: "";
+}
+
+.device-pencil::after {
+  position: absolute;
+  left: 3px;
+  bottom: -15px;
+  width: 7px;
+  height: 16px;
+  border: 1px solid #aa9898;
+  border-top: 0;
+  border-radius: 0 0 5px 5px;
+  background: linear-gradient(90deg, #ddd2cf, #bcaeaa);
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+  content: "";
+}
+
+.product-thumb span,
+.shop-thumb span {
+  width: 12px;
+  height: 52px;
+  border: 1px solid #d7cecc;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 65%, #e8e3e2 100%);
+  box-shadow: 2px 3px 0 rgba(104, 68, 81, 0.12);
+}
+
+.product-thumb span::before,
+.shop-thumb span::before {
+  position: absolute;
+  top: -5px;
+  left: -1px;
+  width: 12px;
+  height: 8px;
+  border: 1px solid #d3c7c7;
+  border-radius: 7px;
+  background: #f0eceb;
+  content: "";
+}
+
+.product-thumb span::after,
+.shop-thumb span::after {
+  left: 2px;
+  bottom: -11px;
+  width: 7px;
+  height: 13px;
+  border: 1px solid #aa9898;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, #ddd2cf, #bcaeaa);
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+}
+
+.product-thumb-gen1 span::before,
+.shop-thumb.product-thumb-gen1 span::before {
+  top: -9px;
+  left: -1px;
+  width: 12px;
+  height: 10px;
+  border-bottom: 1px solid #d3c7c7;
+  border-radius: 7px 7px 2px 2px;
+  background: #fff;
+}
+
+@media (max-width: 699px) and (min-width: 360px) {
+  .result-facts .fact-grid-core {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .result-facts .fact-tile-core:first-child {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 499px) {
+  .result-heading h2 {
+    font-size: 21px;
+  }
+
+  .result-summary {
+    margin-top: 11px;
+    padding: 10px 11px;
+    font-size: 13px;
+  }
+
+  .recommendation-card .product-copy h3 {
+    font-size: 20px;
+  }
+
+  .reason-block-primary .plain-explain {
+    font-size: 14px;
+  }
+
+  .device-pencil {
+    width: 12px;
+    height: 112px;
+  }
+
+  .device-pencil::before {
+    width: 12px;
+  }
+
+  .device-pencil::after {
+    left: 2px;
+    width: 6px;
+  }
+}
+
+@media (max-width: 359px) {
+  .result-facts .fact-grid-core,
+  .alternative-card .result-facts .fact-grid-core {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Readability pass: enlarge decision-making copy without changing the established layout. */
+body {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.intro-copy h1 {
+  font-size: 31px;
+}
+
+.intro-copy p,
+.page-header p {
+  font-size: 15px;
+}
+
+.query-prompt h2 {
+  font-size: 23px;
+}
+
+.query-prompt p,
+.query-status {
+  font-size: 14px;
+}
+
+.flow-panel-heading {
+  font-size: 14px;
+}
+
+.flow-panel-heading small {
+  font-size: 12px;
+}
+
+.flow-panel .field > span {
+  font-size: 14px;
+}
+
+.flow-panel .field select,
+.field select {
+  min-height: 54px;
+  font-size: 17px;
+}
+
+.purpose-heading span {
+  font-size: 15px;
+}
+
+.purpose-heading small {
+  font-size: 13px;
+}
+
+.purpose-panel .segment {
+  min-height: 50px;
+  font-size: 14px;
+}
+
+.primary-button {
+  min-height: 52px;
+  font-size: 16px;
+}
+
+.helper-copy {
+  font-size: 13px;
+}
+
+.result-kicker {
+  font-size: 13px;
+}
+
+.result-heading h2 {
+  font-size: 28px;
+}
+
+.result-context {
+  font-size: 14px;
+}
+
+.result-count {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.result-summary {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.recommendation-card .status-chip,
+.alternative-card .status-chip {
+  font-size: 14px;
+}
+
+.card-note {
+  font-size: 13px;
+}
+
+.recommendation-card .product-copy h3 {
+  font-size: 25px;
+}
+
+.product-copy p {
+  font-size: 14px;
+}
+
+.reason-label {
+  font-size: 14px;
+}
+
+.reason-block-primary .plain-explain {
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.result-facts .fact-tile-core {
+  min-height: 76px;
+}
+
+.result-facts .fact-tile-core .fact-label {
+  font-size: 12px;
+}
+
+.result-facts .fact-tile-core .fact-value {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.fact-more summary {
+  font-size: 14px;
+}
+
+.fact-more-summary {
+  font-size: 12px;
+}
+
+.plain-explain {
+  font-size: 15px;
+}
+
+.price-row span {
+  font-size: 13px;
+}
+
+.price-row strong {
+  font-size: 16px;
+}
+
+.text-button,
+.outline-button {
+  font-size: 15px;
+}
+
+.trust-strip,
+.notice-box {
+  font-size: 13px;
+}
+
+.faq-list summary,
+.faq-list details > p {
+  font-size: 15px;
+}
+
+.nav-item {
+  font-size: 13px;
+}
+
+@media (max-width: 499px) {
+  .intro-copy h1 {
+    font-size: 28px;
+  }
+
+  .intro-copy p,
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .query-prompt h2 {
+    font-size: 22px;
+  }
+
+  .query-status {
+    font-size: 13px;
+  }
+
+  .flow-panel-heading {
+    font-size: 13px;
+  }
+
+  .flow-panel .field > span {
+    font-size: 13px;
+  }
+
+  .flow-panel .field select,
+  .field select {
+    min-height: 52px;
+    font-size: 17px;
+  }
+
+  .purpose-heading span {
+    font-size: 14px;
+  }
+
+  .purpose-heading small {
+    font-size: 12px;
+  }
+
+  .purpose-panel .segment {
+    min-height: 50px;
+    font-size: 14px;
+  }
+
+  .result-heading h2 {
+    font-size: 25px;
+  }
+
+  .result-context {
+    font-size: 13px;
+  }
+
+  .result-summary {
+    font-size: 15px;
+  }
+
+  .recommendation-card .product-copy h3 {
+    font-size: 22px;
+  }
+
+  .reason-block-primary .plain-explain {
+    font-size: 15px;
+  }
+
+  .result-facts .fact-tile-core {
+    min-height: 78px;
+  }
+
+  .result-facts .fact-tile-core .fact-label {
+    font-size: 11px;
+  }
+
+  .result-facts .fact-tile-core .fact-value {
+    font-size: 13px;
+  }
+
+  .alternative-card .product-copy h3 {
+    font-size: 20px;
+  }
+
+  .alternative-card .plain-explain {
+    font-size: 14px;
+  }
+
+  .price-row span {
+    font-size: 12px;
+  }
+
+  .price-row strong {
+    font-size: 15px;
+  }
+
+  .text-button,
+  .outline-button {
+    font-size: 14px;
+  }
+
+  .nav-item {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 359px) {
+  .intro-copy h1 {
+    font-size: 26px;
+  }
+
+  .result-heading h2 {
+    font-size: 23px;
+  }
+
+  .result-summary {
+    font-size: 14px;
+  }
+
+  .recommendation-card .product-copy h3 {
+    font-size: 20px;
   }
 }

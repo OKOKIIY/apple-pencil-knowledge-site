@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf8fe" />
+    <title>Apple Pencil 兼容结论｜视觉参考稿</title>
+    <style>
+      :root {
+        --canvas: #faf8fe;
+        --surface: #ffffff;
+        --surface-low: #f4f3f8;
+        --surface-high: #e9e7ed;
+        --ink: #1a1b1f;
+        --muted: #4c4546;
+        --subtle: #6e6e73;
+        --line: #d2d2d7;
+        --line-soft: #e5e5ea;
+        --black: #000000;
+        --blue: #005ab7;
+        --green: #1e8e3e;
+        --green-soft: #e8f8ee;
+        --amber: #b25e00;
+        --amber-soft: #fff9eb;
+        --red: #ba1a1a;
+        --red-soft: #fff2f1;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        --radius-card: 18px;
+        --radius-block: 10px;
+        --radius-pill: 999px;
+        --font: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+        --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--canvas);
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        color: var(--ink);
+        background: var(--canvas);
+        font-family: var(--font);
+        font-size: 15px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      a {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid rgba(0, 90, 183, 0.28);
+        outline-offset: 3px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
+        background: rgba(250, 248, 254, 0.96);
+        backdrop-filter: blur(14px);
+      }
+
+      .topbar-inner,
+      main {
+        width: min(100% - 32px, 1024px);
+        margin: 0 auto;
+      }
+
+      .topbar-inner {
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+        align-items: center;
+        min-height: 56px;
+        gap: 8px;
+      }
+
+      .icon-button,
+      .edit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        color: var(--ink);
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .icon-button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 22px;
+      }
+
+      .icon-button:hover,
+      .edit-button:hover {
+        border-color: var(--line-soft);
+        background: var(--surface-high);
+      }
+
+      .topbar-title {
+        margin: 0;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+        font-weight: 650;
+        letter-spacing: -0.015em;
+      }
+
+      .preview-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 25px;
+        padding: 3px 8px;
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius-pill);
+        color: var(--subtle);
+        background: var(--surface);
+        font-family: var(--mono);
+        font-size: 10px;
+        white-space: nowrap;
+      }
+
+      main {
+        padding: 18px 0 102px;
+      }
+
+      .selection-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 42px;
+        padding: 7px 11px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-pill);
+        background: var(--surface);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+
+      .selection-copy {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 8px;
+        overflow: hidden;
+      }
+
+      .selection-dot {
+        width: 8px;
+        height: 8px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: var(--black);
+      }
+
+      .selection-copy p {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+
+      .selection-copy span {
+        color: var(--subtle);
+      }
+
+      .edit-button {
+        min-height: 30px;
+        flex: 0 0 auto;
+        gap: 4px;
+        padding: 3px 8px;
+        border-radius: var(--radius-pill);
+        color: var(--black);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .verdict-header {
+        margin: 24px 0 20px;
+      }
+
+      .match-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 25px;
+        padding: 3px 9px;
+        border: 1px solid rgba(30, 142, 62, 0.2);
+        border-radius: var(--radius-pill);
+        color: var(--green);
+        background: var(--green-soft);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .match-chip::before {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        content: "";
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .verdict-header h1 {
+        max-width: 760px;
+        margin-top: 9px;
+        font-size: clamp(28px, 5vw, 38px);
+        line-height: 1.14;
+        letter-spacing: -0.025em;
+      }
+
+      .verdict-header > p {
+        max-width: 720px;
+        margin-top: 11px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .result-layout {
+        display: grid;
+        gap: 18px;
+      }
+
+      .primary-card,
+      .secondary-card,
+      .comparison-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--surface);
+      }
+
+      .primary-card {
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .card-topline,
+      .product-heading,
+      .fact-row,
+      .comparison-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .status-label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        color: var(--surface);
+        background: var(--black);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .price-label {
+        display: grid;
+        justify-items: end;
+        gap: 1px;
+        color: var(--subtle);
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      .price-label strong {
+        color: var(--ink);
+        font-family: var(--font);
+        font-size: 14px;
+      }
+
+      .product-heading {
+        align-items: center;
+        margin-top: 15px;
+      }
+
+      .product-lockup {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 13px;
+      }
+
+      .pencil-visual {
+        display: grid;
+        place-items: center;
+        width: 72px;
+        height: 72px;
+        flex: 0 0 auto;
+        border: 1px solid var(--line-soft);
+        border-radius: 12px;
+        background: var(--surface-low);
+      }
+
+      .pencil-visual svg {
+        width: 56px;
+        height: 56px;
+        overflow: visible;
+        transform: rotate(-18deg);
+      }
+
+      .product-heading h2 {
+        font-size: clamp(22px, 4vw, 28px);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+
+      .product-heading p {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .warning-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 18px;
+        padding: 13px;
+        border: 1px solid #f3dfc1;
+        border-radius: var(--radius-block);
+        color: #5c3b00;
+        background: var(--amber-soft);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .warning-icon {
+        color: var(--amber);
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      .warning-box strong {
+        display: block;
+        margin-bottom: 2px;
+        color: #704500;
+      }
+
+      .fact-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .fact-row {
+        align-items: flex-start;
+        padding: 11px;
+        border: 1px solid rgba(210, 210, 215, 0.72);
+        border-radius: var(--radius-block);
+        background: var(--surface-low);
+      }
+
+      .fact-main {
+        display: flex;
+        min-width: 0;
+        gap: 9px;
+      }
+
+      .fact-icon {
+        display: grid;
+        place-items: center;
+        width: 19px;
+        height: 19px;
+        flex: 0 0 auto;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .fact-row.is-good .fact-icon,
+      .fact-row.is-good .fact-status {
+        color: var(--green);
+      }
+
+      .fact-row.is-caution .fact-icon,
+      .fact-row.is-caution .fact-status {
+        color: var(--amber);
+      }
+
+      .fact-row.is-neutral .fact-icon,
+      .fact-row.is-neutral .fact-status {
+        color: var(--subtle);
+      }
+
+      .fact-copy strong,
+      .fact-copy span {
+        display: block;
+      }
+
+      .fact-copy strong {
+        font-size: 13px;
+      }
+
+      .fact-copy span {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .fact-status {
+        flex: 0 0 auto;
+        padding-left: 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      details.parameters {
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line-soft);
+      }
+
+      details.parameters summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        list-style: none;
+      }
+
+      details.parameters summary::-webkit-details-marker {
+        display: none;
+      }
+
+      details.parameters summary::after {
+        content: "⌄";
+        color: var(--subtle);
+        font-size: 17px;
+        line-height: 1;
+        transform: translateY(-2px);
+      }
+
+      details.parameters[open] summary::after {
+        transform: rotate(180deg) translateY(-2px);
+      }
+
+      .parameter-list {
+        display: grid;
+        gap: 0;
+        margin-top: 10px;
+        border-top: 1px solid var(--line-soft);
+      }
+
+      .parameter-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line-soft);
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .parameter-row strong {
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      .secondary-column {
+        display: grid;
+        align-content: start;
+        gap: 18px;
+      }
+
+      .secondary-card {
+        padding: 16px;
+        background: var(--surface-high);
+      }
+
+      .secondary-card > p {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .secondary-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 5px;
+      }
+
+      .secondary-heading h2 {
+        font-size: 19px;
+        line-height: 1.25;
+      }
+
+      .secondary-heading strong {
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .tradeoff-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .tradeoff {
+        padding: 10px;
+        border: 1px solid rgba(210, 210, 215, 0.7);
+        border-radius: var(--radius-block);
+        background: rgba(255, 255, 255, 0.78);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.52;
+      }
+
+      .tradeoff strong {
+        color: var(--ink);
+      }
+
+      .tradeoff.is-negative strong {
+        color: var(--red);
+      }
+
+      .quick-callout {
+        margin-top: 12px;
+        padding: 8px 10px;
+        border-radius: 5px;
+        color: var(--muted);
+        background: var(--surface-high);
+        font-size: 11px;
+      }
+
+      .quick-callout strong {
+        color: var(--ink);
+      }
+
+      .comparison-card {
+        overflow: hidden;
+      }
+
+      .comparison-heading {
+        align-items: center;
+        padding: 11px 13px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface-low);
+      }
+
+      .comparison-heading strong {
+        font-size: 12px;
+      }
+
+      .comparison-heading span {
+        color: var(--subtle);
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 11px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line-soft);
+        vertical-align: middle;
+        text-align: center;
+      }
+
+      .comparison-table th:first-child,
+      .comparison-table td:first-child {
+        width: 29%;
+        color: var(--muted);
+        text-align: left;
+      }
+
+      .comparison-table th {
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .comparison-table th:nth-child(3),
+      .comparison-table td:nth-child(3) {
+        color: var(--subtle);
+      }
+
+      .comparison-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .positive {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      .muted-value {
+        color: var(--subtle);
+        font-family: var(--mono);
+      }
+
+      .validation-note {
+        padding: 2px 3px 0;
+        color: var(--subtle);
+        font-family: var(--mono);
+        font-size: 10px;
+        line-height: 1.55;
+        text-align: center;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 6;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        min-height: 64px;
+        padding: 7px max(16px, calc((100vw - 1024px) / 2)) 8px;
+        border-top: 1px solid var(--line);
+        background: rgba(250, 248, 254, 0.98);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav-item {
+        display: grid;
+        justify-items: center;
+        gap: 2px;
+        border: 0;
+        color: var(--muted);
+        background: transparent;
+        font-size: 11px;
+      }
+
+      .nav-item.is-active {
+        color: var(--black);
+        font-weight: 700;
+      }
+
+      .nav-icon {
+        font-size: 21px;
+        line-height: 1;
+      }
+
+      @media (min-width: 900px) {
+        main {
+          padding-top: 24px;
+        }
+
+        .result-layout {
+          grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.8fr);
+          align-items: start;
+        }
+
+        .bottom-nav {
+          position: static;
+          width: min(100% - 32px, 1024px);
+          min-height: 0;
+          margin: 0 auto 28px;
+          padding: 14px 0 0;
+          border-top: 1px solid var(--line);
+          background: transparent;
+          backdrop-filter: none;
+        }
+
+        .nav-item {
+          display: inline-flex;
+          flex-direction: row;
+          justify-content: center;
+          gap: 7px;
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .topbar-inner,
+        main {
+          width: min(100% - 32px, 1024px);
+        }
+
+        .preview-tag {
+          max-width: 78px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .primary-card {
+          padding: 16px;
+          border-radius: 15px;
+        }
+
+        .secondary-card,
+        .comparison-card {
+          border-radius: 15px;
+        }
+
+        .fact-status {
+          max-width: 76px;
+          white-space: normal;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .topbar-inner,
+        main {
+          width: min(100% - 24px, 1024px);
+        }
+
+        .topbar-title {
+          font-size: 16px;
+        }
+
+        .verdict-header h1 {
+          font-size: 27px;
+        }
+
+        .product-heading h2 {
+          font-size: 20px;
+        }
+
+        .pencil-visual {
+          width: 60px;
+          height: 60px;
+        }
+
+        .pencil-visual svg {
+          width: 48px;
+          height: 48px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="icon-button" href="http://127.0.0.1:3012/?year=2022&series=digital&variant=ipad10&purpose=draw&result=1#match" aria-label="返回现有查询">‹</a>
+        <p class="topbar-title">Pencil Matcher</p>
+        <span class="preview-tag">Stitch 参考稿</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="selection-pill" aria-label="当前查询条件">
+        <div class="selection-copy">
+          <span class="selection-dot" aria-hidden="true"></span>
+          <p><strong>iPad（第 10 代，2022）</strong><span> · </span><span>画画用途</span></p>
+        </div>
+        <a class="edit-button" href="http://127.0.0.1:3012/?year=2022&series=digital&variant=ipad10&purpose=draw#match">⌘ 修改条件</a>
+      </section>
+
+      <section class="verdict-header" aria-labelledby="verdict-title">
+        <span class="match-chip">首选匹配结果</span>
+        <h1 id="verdict-title">画画首选 Apple Pencil（一代）</h1>
+        <p>2022 iPad 第 10 代 10.9 英寸 · 画画创作 · 可用 2 支笔。画画需要真实压感，但这支笔必须接受转接器配对和充电的限制。</p>
+      </section>
+
+      <div class="result-layout">
+        <article class="primary-card" aria-labelledby="primary-title">
+          <div class="card-topline">
+            <span class="status-label">首选 · 具备真实压感</span>
+            <span class="price-label"><span>官方参考价</span><strong>¥799</strong></span>
+          </div>
+
+          <div class="product-heading">
+            <div class="product-lockup">
+              <div class="pencil-visual" aria-hidden="true">
+                <svg viewBox="0 0 100 100" role="presentation">
+                  <path d="M18 67 13 82l15-5 55-55-10-10-55 55Z" fill="#d8cfcc" stroke="#7d6c70" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="m13 82 8-3 7 3-15 5Z" fill="#a99692"/>
+                  <rect x="23" y="30" width="59" height="19" rx="9.5" transform="rotate(-45 23 30)" fill="#fff" stroke="#7d6c70" stroke-width="3"/>
+                  <path d="m35 36 38-38" stroke="#f0e9e7" stroke-width="4" stroke-linecap="round" transform="translate(0 28)"/>
+                  <path d="m75 19 7-7 10 10-7 7" fill="#ece5e3" stroke="#7d6c70" stroke-width="3" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <h2 id="primary-title">Apple Pencil 一代</h2>
+                <p>有压感；iPad 10 需要转接器</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <span class="warning-icon" aria-hidden="true">△</span>
+            <p><strong>关键提醒：配对与充电限制</strong>需要通过 USB-C 转接器完成配对和充电；它不能吸附在 iPad 边框上无线充电。</p>
+          </div>
+
+          <div class="fact-list" aria-label="关键功能事实">
+            <div class="fact-row is-good">
+              <div class="fact-main"><span class="fact-icon" aria-hidden="true">✓</span><div class="fact-copy"><strong>真实压感</strong><span>支持线条深浅、粗细随力度变化，适合画画。</span></div></div>
+              <span class="fact-status">支持</span>
+            </div>
+            <div class="fact-row is-caution">
+              <div class="fact-main"><span class="fact-icon" aria-hidden="true">↔</span><div class="fact-copy"><strong>配对与充电</strong><span>通过 USB-C 转接器连接，iPad 10 不能直接插笔。</span></div></div>
+              <span class="fact-status">需要转接</span>
+            </div>
+            <div class="fact-row is-neutral">
+              <div class="fact-main"><span class="fact-icon" aria-hidden="true">×</span><div class="fact-copy"><strong>磁吸收纳</strong><span>不支持磁吸收纳，建议准备笔袋或笔套。</span></div></div>
+              <span class="fact-status">不支持</span>
+            </div>
+          </div>
+
+          <details class="parameters">
+            <summary>查看完整技术参数清单</summary>
+            <div class="parameter-list">
+              <div class="parameter-row"><span>压感</span><strong>支持</strong></div>
+              <div class="parameter-row"><span>磁吸收纳</span><strong>不支持</strong></div>
+              <div class="parameter-row"><span>配对方式</span><strong>通过转接器配对</strong></div>
+              <div class="parameter-row"><span>充电方式</span><strong>USB-C 转接充电</strong></div>
+              <div class="parameter-row"><span>系统要求</span><strong>以设备兼容关系为准</strong></div>
+            </div>
+          </details>
+        </article>
+
+        <aside class="secondary-column" aria-label="备选与对比">
+          <section class="secondary-card" aria-labelledby="secondary-title">
+            <p>如果你更看重收纳省事和标准线材：</p>
+            <div class="secondary-heading">
+              <h2 id="secondary-title">备选：Apple Pencil（USB-C）</h2>
+              <strong>以实际页面为准</strong>
+            </div>
+            <div class="tradeoff-list">
+              <div class="tradeoff"><strong>使用优势：</strong>USB-C 线直连配对和充电；支持磁吸收纳。</div>
+              <div class="tradeoff is-negative"><strong>关键代价：</strong>不支持真实压感，不适合把力度变化当作核心画画体验。</div>
+            </div>
+            <p class="quick-callout"><strong>快速建议：</strong>纯写字或批注可以优先考虑；严肃画画仍选有压感的方案。</p>
+          </section>
+
+          <section class="comparison-card" aria-labelledby="comparison-title">
+            <div class="comparison-heading"><strong id="comparison-title">画画关键参数速查</strong><span>兼容矩阵</span></div>
+            <table class="comparison-table">
+              <thead><tr><th>功能指标</th><th>一代</th><th>USB-C</th></tr></thead>
+              <tbody>
+                <tr><td>压力感应</td><td class="positive">✓ 支持</td><td class="muted-value">— 无</td></tr>
+                <tr><td>倾斜感应</td><td>支持</td><td>支持</td></tr>
+                <tr><td>磁吸收纳</td><td class="muted-value">— 不支持</td><td class="positive">✓ 支持</td></tr>
+                <tr><td>充电方式</td><td>转接器</td><td>USB-C 直连</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <p class="validation-note">本页为 Stitch 视觉参考稿。兼容、价格、库存和购买链接仍以主站的最新数据为准。</p>
+        </aside>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="参考页导航">
+      <button class="nav-item is-active" type="button"><span class="nav-icon">⊙</span><span>兼容查询</span></button>
+      <button class="nav-item" type="button"><span class="nav-icon">⇄</span><span>对比</span></button>
+      <button class="nav-item" type="button"><span class="nav-icon">☷</span><span>规格</span></button>
+    </nav>
+  </body>
+</html>

@@ -125,8 +125,9 @@
             </div>
             <div class="result-heading">
               <div>
-                <span class="section-label result-kicker">查询结果</span>
-                <h2 id="result-title" tabindex="-1">你的适配结论</h2>
+                <span class="section-label result-kicker">你的购买结论</span>
+                <h2 id="result-title" tabindex="-1">先把 iPad 选准确</h2>
+                <p class="result-context" id="result-context">选好设备后，这里会先告诉你应该买哪支笔。</p>
               </div>
               <span class="result-count" id="result-count">待查询</span>
             </div>
@@ -142,7 +143,7 @@
 
             <article class="recommendation-card" id="primary-card">
               <div class="card-topline">
-                <span class="status-chip status-good"><span data-icon="check"></span>首选</span>
+                <span class="status-chip status-good"><span data-icon="check"></span>建议先买</span>
                 <span class="card-note" id="primary-note">适合记笔记 / 批注</span>
               </div>
               <div class="product-row">
@@ -152,13 +153,13 @@
                   <p id="primary-official">官方名称：Apple Pencil（USB-C）</p>
                 </div>
               </div>
+              <div class="reason-block reason-block-primary">
+                <span class="reason-label"><span data-icon="sparkles"></span>为什么它排第一</span>
+                <p class="plain-explain" id="primary-explain">它能直接用 USB-C 配对和充电，支持倾斜，但没有真实压感。日常写字、批注和备课够用。</p>
+              </div>
               <div id="primary-facts" class="result-facts"></div>
               <div class="feature-guide" aria-label="功能示意">
                 <img src="assets/pencil-feature-guide.svg" alt="功能示意：压感、磁吸收纳和转接器分别说明不同限制" width="720" height="220" loading="lazy" />
-              </div>
-              <div class="reason-block">
-                <span class="reason-label"><span data-icon="sparkles"></span>为什么推荐</span>
-                <p class="plain-explain" id="primary-explain">它能直接用 USB-C 配对和充电，支持倾斜，但没有真实压感。日常写字、批注和备课够用。</p>
               </div>
               <div class="price-row">
                 <div><span>官方价</span><strong id="primary-retail">展示位</strong></div>
@@ -169,7 +170,7 @@
 
             <article class="alternative-card" id="secondary-card">
               <div class="card-topline">
-                <span class="status-chip status-neutral">备选</span>
+                <span class="status-chip status-neutral">如果你更在意另一件事</span>
                 <span class="card-note" id="secondary-note">想画画再考虑</span>
               </div>
               <div class="product-row">
@@ -271,6 +272,7 @@
             <details><summary>笔连不上，是不是一定坏了？<span data-icon="chevron-down"></span></summary><p>先看型号是否兼容，再检查电量、蓝牙、线材或转接器；在确认兼容且重新连接后仍异常，才把笔本体列为重点排查对象。</p></details>
             <details><summary>用几个月出问题，就是翻新笔吗？<span data-icon="chevron-down"></span></summary><p>不是。故障可能来自连接、软件、笔尖、屏幕、系统或硬件；翻新、拆修和仿品需要来源、功能和外观证据一起支持。</p></details>
           </div>
+          <p class="faq-empty" id="faq-empty" hidden>没有找到对应问题，换一个词试试，比如“压感”或“转接器”。</p>
         </section>
 
         <section class="page" data-page="shop" aria-labelledby="shop-title" hidden>
@@ -278,7 +280,7 @@
             <h1 id="shop-title">我的在售，<br />只放我能说明白的。</h1>
             <p>这里是我的个人在售链接。价格、库存和成色会变化，购买前请先完成上面的兼容查询。</p>
           </div>
-          <div class="notice-box" id="shop-notice"><span data-icon="info"></span><span>只展示已经核对过来源、成色、价格和购买链接的商品；信息会随当天在售状态更新。</span></div>
+          <div class="notice-box" id="shop-notice"><span data-icon="info"></span><span>只展示配置中仍标记为可展示的资料；价格、成色、库存和链接状态以实际商品页为准。</span></div>
           <div class="shop-list" id="shop-list"></div>
         </section>
       </main>

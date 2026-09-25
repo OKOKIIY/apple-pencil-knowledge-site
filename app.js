@@ -38,8 +38,12 @@ const profileData = {
   socialProof: '',
   ...(siteData.profile || {})
 };
-const listingData = Array.isArray(siteData.listings) ? siteData.listings : [];
-const priceData = siteData.pencilPrices && typeof siteData.pencilPrices === 'object' ? siteData.pencilPrices : {};
+const listingData = Array.isArray(siteData.listings)
+  ? siteData.listings.filter((listing) => listing && typeof listing === 'object' && !Array.isArray(listing))
+  : [];
+const priceData = siteData.pencilPrices && typeof siteData.pencilPrices === 'object' && !Array.isArray(siteData.pencilPrices)
+  ? siteData.pencilPrices
+  : {};
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
@@ -98,7 +102,8 @@ function renderProfile() {
 
 function renderShop() {
   const list = document.querySelector('#shop-list');
-  if (!listingData.length) {
+  const visibleListings = listingData.filter((listing) => listing.status !== 'inactive');
+  if (!visibleListings.length) {
     const xiaohongshuUrl = safeUrl(profileData.xiaohongshuUrl);
     const followAction = xiaohongshuUrl
       ? `<a class="outline-button" href="${escapeHtml(xiaohongshuUrl)}" target="_blank" rel="noreferrer">去小红书看最新信息</a>`
@@ -108,10 +113,10 @@ function renderShop() {
   }
 
   const allowedThumbs = new Set(['product-thumb-gen1', 'product-thumb-usbc', 'product-thumb-gen2', 'product-thumb-pro']);
-  list.innerHTML = listingData.map((listing) => {
+  list.innerHTML = visibleListings.map((listing) => {
     const thumb = allowedThumbs.has(listing.kind) ? listing.kind : 'product-thumb-gen1';
     const name = escapeHtml(listing.name || 'Apple Pencil');
-    const badge = escapeHtml(listing.badge || '已核验信息');
+    const badge = escapeHtml(listing.badge || '资料待确认');
     const condition = escapeHtml(listing.condition || '成色以详情为准');
     const note = escapeHtml(listing.note || '购买前先确认兼容型号。');
     const price = escapeHtml(listing.price || '请看购买页');
@@ -123,7 +128,8 @@ function renderShop() {
     const action = url
       ? `<a class="outline-button" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${actionLabel}</a>`
       : '<span class="listing-link-pending">购买链接核验中</span>';
-    const supporting = [sold, service].filter(Boolean).map((item) => `<span>${item}</span>`).join('');
+    const updatedAt = escapeHtml(listing.updatedAt || '');
+    const supporting = [sold, service, updatedAt ? `资料更新：${updatedAt}` : '资料更新时间未提供'].filter(Boolean).map((item) => `<span>${item}</span>`).join('');
     return `<article class="shop-item"><div class="shop-thumb ${thumb}" aria-hidden="true"><span></span></div><div class="shop-copy"><div class="shop-meta"><span class="status-chip status-good">${badge}</span><span>${condition}</span></div><h2>${name}</h2><p>${note}</p>${supporting ? `<div class="shop-supporting">${supporting}</div>` : ''}<div class="shop-price"><span>${priceLabel}</span><strong>${price}</strong></div>${action}</div></article>`;
   }).join('');
 }
@@ -383,11 +389,39 @@ const catalog = {
   }
 };
 
+function validateCatalog() {
+  const issues = [];
+  for (const [year, yearData] of Object.entries(catalog)) {
+    for (const [seriesKey, series] of Object.entries(yearData)) {
+      for (const [variantKey, variantLabel] of Object.entries(series.variants || {})) {
+        const device = series.devices?.[variantKey];
+        if (!device) {
+          issues.push(`${year}/${seriesKey}/${variantKey}: missing device data`);
+          continue;
+        }
+        if (device.label !== variantLabel) issues.push(`${year}/${seriesKey}/${variantKey}: variant label mismatch`);
+        if (!device.compatible?.length) continue;
+        for (const pencilKey of device.compatible || []) {
+          if (!pencils[pencilKey]) issues.push(`${year}/${seriesKey}/${variantKey}: unknown pencil ${pencilKey}`);
+        }
+        for (const purpose of Object.keys(purposeLabels)) {
+          const primaryKey = device.primary?.[purpose];
+          if (!device.compatible?.includes(primaryKey)) {
+            issues.push(`${year}/${seriesKey}/${variantKey}: invalid ${purpose} recommendation`);
+          }
+        }
+      }
+    }
+  }
+  if (issues.length) console.warn('Apple Pencil catalog validation warnings:', issues);
+  return issues;
+}
+
 const purposeCopy = {
-  notes: { note: '适合记笔记 / 批注', summary: '如果你主要记笔记，我会先把 {primary} 放在前面：少一个折腾步骤，拿起来就能写。' },
+  notes: { note: '适合记笔记 / 批注', summary: '如果你主要记笔记，我会先把 {primary} 放在前面：连接路径更直接，日常写字和批注够用。' },
   draw: { note: '画画优先', summary: '如果你要画画，先看有没有真实压感；能写不等于能画出力度变化。' },
   carefree: { note: '少折腾优先', summary: '你更在意拿起来就用，所以我会优先推荐连接和收纳更省心的那支。' },
-  budget: { note: '预算优先', summary: '预算优先可以考虑老型号，但要把转接器、电池和二手状态一起算进来。' }
+  budget: { note: '预算优先', summary: '预算优先会先参考当前可见价格；价格资料不完整时，仍按兼容性和配件成本给出保守建议。' }
 };
 
 const purposeLabels = {
@@ -396,6 +430,8 @@ const purposeLabels = {
   carefree: '想省心',
   budget: '预算优先'
 };
+
+validateCatalog();
 
 const flowOrder = ['year', 'series', 'variant', 'purpose'];
 const state = { purpose: '', page: 'match', hasQueried: false };
@@ -413,6 +449,7 @@ const queryDescription = document.querySelector('#query-description');
 const queryHint = document.querySelector('#query-hint');
 const resultBridge = document.querySelector('#result-bridge');
 const resultBridgeTitle = document.querySelector('#result-bridge-title');
+const resultContext = document.querySelector('#result-context');
 
 function isEmptyYear() {
   return Boolean(yearSelect.value) && Object.keys(catalog[yearSelect.value] || {}).length === 0;
@@ -589,7 +626,12 @@ function chipClass(value) {
 }
 
 function getPencil(key, device) {
-  const pencil = { ...pencils[key], ...(priceData[key] || {}) };
+  const configuredPrice = priceData[key] && typeof priceData[key] === 'object' && !Array.isArray(priceData[key])
+    ? priceData[key]
+    : {};
+  const pencil = { ...pencils[key] };
+  if (typeof configuredPrice.used === 'string') pencil.used = configuredPrice.used;
+  if (typeof configuredPrice.retail === 'string') pencil.retail = configuredPrice.retail;
   if (key === 'gen1' && device.adapter === 'usb-c') {
     pencil.official = '有压感；iPad 10/11 需要转接器';
     pencil.pair = '通过转接器配对';
@@ -639,7 +681,7 @@ function renderPrice(selector, value, fallback) {
 }
 
 function getListingFor(key) {
-  return listingData.find((listing) => listing.pencil === key && Boolean(safeUrl(listing.url))) || null;
+  return listingData.find((listing) => listing.pencil === key && listing.status !== 'inactive' && Boolean(safeUrl(listing.url))) || null;
 }
 
 function hasListingFor(key) {
@@ -651,6 +693,33 @@ function renderUsedPrice(key, pencil, valueSelector, labelSelector) {
   const label = document.querySelector(labelSelector);
   if (label) label.textContent = listing ? (listing.priceLabel || '在售价') : '二手参考';
   renderPrice(valueSelector, listing?.price || pencil.used, listing ? '以在售页为准' : '暂未提供参考');
+}
+
+function parsePrice(value) {
+  const match = String(value || '').replace(/,/g, '').match(/(?:¥|￥)\s*([0-9]+(?:\.[0-9]+)?)/);
+  return match ? Number(match[1]) : Number.NaN;
+}
+
+function getBudgetPrice(key, device) {
+  const listing = getListingFor(key);
+  const pencil = getPencil(key, device);
+  const candidates = [listing?.price, pencil.used, pencil.retail];
+  for (const candidate of candidates) {
+    const amount = parsePrice(candidate);
+    if (Number.isFinite(amount)) return amount;
+  }
+  return Number.NaN;
+}
+
+function choosePrimaryKey(device, purpose) {
+  const fallback = device.primary[purpose];
+  if (purpose !== 'budget' || device.compatible.length < 2) return fallback;
+
+  const priced = device.compatible
+    .map((key) => ({ key, price: getBudgetPrice(key, device) }))
+    .filter(({ price }) => Number.isFinite(price));
+  if (priced.length !== device.compatible.length) return fallback;
+  return priced.sort((left, right) => left.price - right.price)[0]?.key || fallback;
 }
 
 function setThumbClass(node, pencil) {
@@ -688,17 +757,34 @@ function renderResult() {
   if (resultBridge) resultBridge.hidden = false;
   if (resultBridgeTitle) resultBridgeTitle.textContent = '结论已生成';
 
-  if (!device || !device.compatible.length) {
-    document.querySelector('#result-title').textContent = device?.label || `${year} 年没有新款 iPad`;
-    document.querySelector('#result-count').textContent = '不支持';
-    document.querySelector('#result-summary').textContent = '这台 iPad 不支持 Apple Pencil，不建议为了写字买第三方平替冒充原装功能。';
-    document.querySelector('#empty-result-title').textContent = device?.label
-      ? '这台 iPad 不支持 Apple Pencil'
-      : `${year} 年没有新款 iPad 可供查询`;
-    document.querySelector('#empty-result-copy').textContent = device?.label
-      ? '它不是“缺一个转接器”，而是产品本身没有 Apple Pencil 兼容性。'
-      : '请选择有 iPad 新款发布的年份，或确认设备的实际上市年份。';
-    emptyResult.className = `empty-result ${device?.label ? 'empty-result-danger' : 'empty-result-neutral'}`;
+  const emptyYear = isEmptyYear();
+  const unsupportedDevice = Boolean(device && !device.compatible.length);
+  if (emptyYear || unsupportedDevice || !device) {
+    const isUnsupported = unsupportedDevice;
+    const title = emptyYear ? `${year} 年没有新款 iPad` : device?.label || '还没有完整的 iPad 选择';
+    document.querySelector('#result-title').textContent = title;
+    if (resultContext) resultContext.textContent = emptyYear
+      ? '年份说明 · 请换一个有新款发布的年份'
+      : isUnsupported
+        ? '兼容性判断 · 这台 iPad 没有可推荐的 Apple Pencil'
+        : '请回到上方补齐 iPad 型号';
+    document.querySelector('#result-count').textContent = emptyYear ? '无新款' : isUnsupported ? '不支持' : '待补全';
+    document.querySelector('#result-summary').textContent = emptyYear
+      ? '这个年份没有新款 iPad 发布，换一个机型发布年份再继续查询。'
+      : isUnsupported
+        ? '这台 iPad 不支持 Apple Pencil，不建议为了写字买第三方平替冒充原装功能。'
+        : '请先选择完整的年份、系列和具体版本，再查看适配结论。';
+    document.querySelector('#empty-result-title').textContent = emptyYear
+      ? `${year} 年没有新款 iPad 可供查询`
+      : isUnsupported
+        ? '这台 iPad 不支持 Apple Pencil'
+        : '还没有完整的 iPad 选择';
+    document.querySelector('#empty-result-copy').textContent = emptyYear
+      ? '请选择有 iPad 新款发布的年份，或确认设备的实际上市年份。'
+      : isUnsupported
+        ? '它不是“缺一个转接器”，而是产品本身没有 Apple Pencil 兼容性。'
+        : '回到上方补齐选择后，这里会给出首选、备选和需要的配件。';
+    emptyResult.className = `empty-result ${isUnsupported ? 'empty-result-danger' : 'empty-result-neutral'}`;
     emptyResult.hidden = false;
     primaryCard.hidden = true;
     secondaryCard.hidden = true;
@@ -706,7 +792,7 @@ function renderResult() {
     return;
   }
 
-  const primaryKey = device.primary[state.purpose];
+  const primaryKey = choosePrimaryKey(device, state.purpose);
   const secondaryKey = device.compatible.find((key) => key !== primaryKey);
   const primary = getPencil(primaryKey, device);
   const secondary = secondaryKey ? getPencil(secondaryKey, device) : null;
@@ -717,7 +803,8 @@ function renderResult() {
   primaryCard.hidden = false;
   resultSection.dataset.resultState = 'ready';
 
-  document.querySelector('#result-title').textContent = `${year} · ${deviceLabel}`;
+  document.querySelector('#result-title').textContent = `先选 ${primary.name}`;
+  if (resultContext) resultContext.textContent = `${year} · ${deviceLabel} · ${purposeLabels[state.purpose]}`;
   document.querySelector('#result-count').textContent = `能用 ${device.compatible.length} 支`;
   document.querySelector('#result-summary').textContent = purposeCopy[state.purpose].summary.replace('{primary}', primary.name);
 
@@ -769,6 +856,13 @@ function explanation(key, purpose, device) {
 function normalizePage(hash) {
   const page = hash.replace(/^#/, '').split('?')[0];
   return ['match', 'avoid', 'faq', 'shop'].includes(page) ? page : 'match';
+}
+
+function canonicalizePageHash(page) {
+  if (window.location.hash === `#${page}`) return;
+  const url = new URL(window.location.href);
+  url.hash = `#${page}`;
+  window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
 function syncQueryState() {
@@ -828,6 +922,11 @@ function goTo(page, { writeHistory = true, scrollBehavior = 'smooth' } = {}) {
     window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
   }
   window.scrollTo({ top: 0, behavior: scrollBehavior });
+}
+
+function revealQueriedResult() {
+  if (state.page !== 'match' || !state.hasQueried || resultSection.hidden) return;
+  window.requestAnimationFrame(() => resultSection.scrollIntoView({ behavior: 'auto', block: 'start' }));
 }
 
 let toastTimer;
@@ -942,6 +1041,7 @@ document.querySelector('#query-button').addEventListener('click', () => {
       queryButton.classList.remove('is-processing');
       queryButton.removeAttribute('aria-busy');
       resultTitle?.focus({ preventScroll: true });
+      resultSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 260);
   });
 });
@@ -963,7 +1063,10 @@ document.querySelectorAll('[data-nav]').forEach((link) => link.addEventListener(
 
 function restoreRoute() {
   restoreQueryState();
-  goTo(normalizePage(window.location.hash), { writeHistory: false, scrollBehavior: 'auto' });
+  const page = normalizePage(window.location.hash);
+  canonicalizePageHash(page);
+  goTo(page, { writeHistory: false, scrollBehavior: 'auto' });
+  revealQueriedResult();
 }
 
 window.addEventListener('popstate', restoreRoute);
@@ -987,8 +1090,15 @@ document.querySelectorAll('[data-action]').forEach((button) => {
     }
     if (action === 'adapter-faq') {
       goTo('faq');
-      const detail = [...document.querySelectorAll('#faq-list details')].find((node) => node.textContent.includes('转接器'));
-      if (detail) detail.open = true;
+      const faqSearch = document.querySelector('#faq-search');
+      if (faqSearch) faqSearch.value = '';
+      const details = [...document.querySelectorAll('#faq-list details')];
+      details.forEach((detail) => { detail.hidden = false; });
+      const detail = details.find((node) => node.textContent.includes('转接器'));
+      if (detail) {
+        detail.open = true;
+        detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
     if (action === 'show-checklist') {
       const checklist = document.querySelector('#receipt-checklist-details');
@@ -1000,9 +1110,12 @@ document.querySelectorAll('[data-action]').forEach((button) => {
 
 document.querySelector('#faq-search').addEventListener('input', (event) => {
   const query = event.target.value.trim().toLowerCase();
-  document.querySelectorAll('#faq-list details').forEach((detail) => {
+  const details = [...document.querySelectorAll('#faq-list details')];
+  details.forEach((detail) => {
     detail.hidden = query && !detail.textContent.toLowerCase().includes(query);
   });
+  const empty = document.querySelector('#faq-empty');
+  if (empty) empty.hidden = !query || details.some((detail) => !detail.hidden);
 });
 
 yearSelect.innerHTML = `<option value="">请选择发布年份</option>${Object.keys(catalog)
@@ -1014,8 +1127,9 @@ renderShop();
 restoreQueryState();
 const initialPage = normalizePage(window.location.hash);
 if (!window.location.hash) {
-  const url = new URL(window.location.href);
-  url.hash = '#match';
-  window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+  canonicalizePageHash('match');
+} else {
+  canonicalizePageHash(initialPage);
 }
 goTo(initialPage, { writeHistory: false, scrollBehavior: 'auto' });
+revealQueriedResult();

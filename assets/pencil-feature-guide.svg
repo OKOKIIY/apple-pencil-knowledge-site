@@ -1,33 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="title desc">
   <title id="title">Apple Pencil 功能示意图</title>
-  <desc id="desc">一支 Apple Pencil 和压感、磁吸、转接器三个功能提示。</desc>
-  <rect width="720" height="220" rx="20" fill="#fff9f7"/>
-  <path d="M76 166 277 45c9-5 20-2 26 7l8 14c5 9 2 20-7 26L103 212c-9 5-20 2-26-7l-8-14c-5-9-2-20 7-25Z" fill="#fff" stroke="#924455" stroke-width="5"/>
-  <path d="m75 166-29 18 21 30 36-2" fill="#d6c2c5" stroke="#924455" stroke-width="5"/>
-  <path d="m277 45 20-12c7-4 16-2 20 5l8 14c4 7 2 16-5 20l-16 10" fill="#e6d8da" stroke="#924455" stroke-width="5"/>
-  <path d="M109 150 279 48" stroke="#d9788b" stroke-width="5" stroke-linecap="round"/>
-  <path d="M183 111 225 85" stroke="#eadde0" stroke-width="14" stroke-linecap="round"/>
+  <desc id="desc">一支细长的 Apple Pencil，旁边标出压感、磁吸收纳和转接器三个购买判断点。</desc>
+  <rect width="720" height="220" rx="20" fill="#fffaf8"/>
+  <g transform="rotate(-17 208 110)">
+    <path d="M76 93 48 110l28 17h22V93H76Z" fill="#d8cfcc" stroke="#8e626d" stroke-width="4" stroke-linejoin="round"/>
+    <path d="m48 110 10 0 10-6v12l-10-6Z" fill="#a99692"/>
+    <rect x="83" y="91" width="254" height="38" rx="19" fill="#fff" stroke="#8e626d" stroke-width="4"/>
+    <path d="M105 96h205" stroke="#f0e9e7" stroke-width="7" stroke-linecap="round"/>
+    <path d="M316 91h22v38h-22" fill="#ece5e3" stroke="#8e626d" stroke-width="4"/>
+    <path d="M319 96v28" stroke="#d5cac8" stroke-width="3"/>
+    <path d="M235 95v30" stroke="#eadcdf" stroke-width="3" stroke-linecap="round"/>
+  </g>
   <g fill="none" stroke="#b05c6d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="m334 61 28-20 38 10"/>
-    <path d="m336 108 28 0 35-18"/>
-    <path d="m336 157 28 0 35 18"/>
+    <path d="m350 55 28-16 35 8"/>
+    <path d="m350 110 28 0 35-18"/>
+    <path d="m350 165 28 0 35 18"/>
   </g>
   <g>
-    <rect x="412" y="27" width="245" height="54" rx="14" fill="#e8f4ef" stroke="#c6e3d8"/>
-    <circle cx="437" cy="54" r="12" fill="#4d947e"/>
-    <path d="m431 54 5 5 9-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="460" y="61" fill="#276c5a" font-size="22" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">压感：画画看轻重</text>
+    <rect x="430" y="24" width="230" height="56" rx="14" fill="#e8f4ef" stroke="#c6e3d8"/>
+    <circle cx="455" cy="52" r="12" fill="#4d947e"/>
+    <path d="m449 52 5 5 9-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="478" y="61" fill="#276c5a" font-size="29" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">压感：力度变化</text>
   </g>
   <g>
-    <rect x="412" y="91" width="245" height="54" rx="14" fill="#fbe7eb" stroke="#efd1d8"/>
-    <circle cx="437" cy="118" r="12" fill="#b05c6d"/>
-    <path d="M431 118h12M437 112v12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-    <text x="460" y="125" fill="#924455" font-size="22" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">磁吸：收纳不等于充电</text>
+    <rect x="430" y="82" width="230" height="56" rx="14" fill="#fbe7eb" stroke="#efd1d8"/>
+    <circle cx="455" cy="110" r="12" fill="#b05c6d"/>
+    <path d="M449 110h12M455 104v12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <text x="478" y="119" fill="#924455" font-size="29" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">磁吸：收纳提示</text>
   </g>
   <g>
-    <rect x="412" y="155" width="245" height="54" rx="14" fill="#fff2de" stroke="#f0d8b3"/>
-    <circle cx="437" cy="182" r="12" fill="#b97935"/>
-    <path d="M431 182h12M437 176v12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-    <text x="460" y="189" fill="#87501d" font-size="22" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">转接器：先看 iPad 型号</text>
+    <rect x="430" y="140" width="230" height="56" rx="14" fill="#fff2de" stroke="#f0d8b3"/>
+    <circle cx="455" cy="168" r="12" fill="#b97935"/>
+    <path d="M449 168h12M455 162v12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <text x="478" y="177" fill="#87501d" font-size="29" font-weight="700" font-family="Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif">转接：先查型号</text>
   </g>
 </svg>
