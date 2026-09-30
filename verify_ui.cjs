@@ -363,7 +363,7 @@ async function main() {
     await assertText(page, '#primary-name', 'Apple Pencil 一代');
     await assertText(page, '#primary-facts', '需要转接器（iPad 10/11）');
     await assertText(page, '#primary-retail', '¥799');
-    await assertText(page, '#primary-used', '¥388');
+    await assertText(page, '#primary-used', '¥378');
     await assertText(page, '#primary-used-label', '在售价（二手99新）');
     assert(await page.locator('#primary-facts .fact-tile').count() >= 5, 'facts should render as scannable feature tiles');
     assert(await page.locator('#primary-card .feature-guide').isVisible(), 'primary result should include a static feature guide');
@@ -417,10 +417,14 @@ async function main() {
     assert(new URL(page.url()).hash === '#shop', `shop route was not written to the URL: ${page.url()}`);
     assert(await page.locator('#shop-list .listing-empty').count() === 0, 'shop page should not show the empty state when a listing is supplied');
     assert(await page.locator('#shop-list .shop-item').count() === 1, 'shop page should render the supplied listing');
-    await assertText(page, '#shop-list .shop-item', '¥388');
+    await assertText(page, '#shop-list .shop-item', '¥378');
     await assertText(page, '#shop-list .shop-item', 'iPad 11（A16）');
     await assertText(page, '#shop-list .shop-item', '全套带盒');
     await assertText(page, '#shop-list .shop-item', '支持验货');
+    await assertText(page, '#shop-list .shop-item', '已售 100');
+    await assertText(page, '#shop-list .shop-item', '2026-09-30');
+    await assertText(page, '#shop-list .shop-item', '去小红书主页找商品');
+    await assertText(page, '#shop-list .shop-item', '没有独立商品页');
     await page.screenshot({ path: path.join(screenshots, 'shop-live-390.png'), fullPage: true });
     await assertBottomContentAboveNav(page, '#shop-list .shop-item');
     await assertNoHorizontalOverflow(page);

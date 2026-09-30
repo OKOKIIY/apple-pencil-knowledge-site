@@ -8,7 +8,8 @@ window.APPLE_PENCIL_SITE_DATA = {
   },
   pencilPrices: {
     gen1: {
-      used: '¥388'
+      used: '¥378',
+      updatedAt: '2026-09-30'
     }
   },
   listings: [
@@ -18,12 +19,13 @@ window.APPLE_PENCIL_SITE_DATA = {
       kind: 'product-thumb-gen1',
       badge: '99 新',
       condition: '全套带盒 · 含 C 转',
-      note: '主推 iPad 11（A16）；iPad 6—11 代数字版按具体型号确认。链接在就是还在，支持验货，商品资料标注无拆修。',
-      price: '¥388',
+      note: '主推 iPad 11（A16）；iPad 6—11 代数字版按具体型号确认。当前没有独立商品页，请进入小红书主页后查看在售笔款。',
+      price: '¥378',
       priceLabel: '在售价（二手99新）',
-      sold: '已售 62',
+      sold: '已售 100',
       service: '有问题联系，按商品页约定全款退包运费',
-      actionLabel: '去小红书购买',
+      actionLabel: '去小红书主页找商品',
+      updatedAt: '2026-09-30',
       url: 'https://xhslink.cn/m/5wHE9dbgPI5'
     }
   ]
