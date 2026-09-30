@@ -97,6 +97,10 @@ function renderProfile() {
   image.width = 48;
   image.height = 48;
   image.loading = 'lazy';
+  image.addEventListener('error', () => {
+    image.remove();
+    avatar.textContent = name.slice(0, 1) || '白';
+  }, { once: true });
   avatar.append(image);
 }
 

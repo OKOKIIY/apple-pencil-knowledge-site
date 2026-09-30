@@ -278,6 +278,8 @@ async function main() {
       assert(await page.locator('#copy-xhs-id').isVisible(), 'copy button should render for the supplied Xiaohongshu ID');
       assert(await page.locator('#profile-avatar img').isVisible(), 'supplied profile avatar should render');
       await assertText(page, '#profile-proof', '7850');
+      assert(await page.locator('meta[name="description"]').getAttribute('content'), 'page description should be present');
+      assert(await page.locator('meta[property="og:title"]').getAttribute('content'), 'Open Graph title should be present');
       await assertSemanticTextContrast(page);
       await assertYearCoverage(page);
       await assertReleaseYearOptions(page);
